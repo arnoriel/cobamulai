@@ -110,7 +110,7 @@ const Hero = () => {
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <button className="bg-white text-brand-dark hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2">
-              Konsultasi Gratis <ArrowRight size={20} />
+              Konsultasi Sekarang <ArrowRight size={20} />
             </button>
             {/* <button className="px-8 py-4 rounded-full font-bold text-lg border border-white/20 hover:bg-white/5 transition-all backdrop-blur-sm">
               Lihat Portfolio
