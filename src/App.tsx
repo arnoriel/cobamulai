@@ -9,14 +9,19 @@ import {
   Menu, 
   X, 
   Zap, 
-  Globe} from 'lucide-react';
+  Globe
+} from 'lucide-react';
+
+// Pastikan file supabaseClient.js sudah dibuat di folder src
+import { supabase } from './supabaseClient'; 
+
 import Process from './components/Process';
 import About from './components/About';
 
 // --- COMPONENTS ---
 
-// 1. Navbar Component
-const Navbar = () => {
+// 1. Navbar Component (Update: Menerima props waLink)
+const Navbar = ({ waLink }: { waLink: string }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -43,9 +48,15 @@ const Navbar = () => {
                   {item}
                 </a>
               ))}
-              <button className="bg-gradient-to-r from-brand-primary to-brand-cyan hover:opacity-90 text-white px-5 py-2 rounded-full font-medium transition-all shadow-lg shadow-brand-primary/30">
+              {/* BUTTON 1: Navbar (Diubah jadi Link) */}
+              <a 
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="bg-gradient-to-r from-brand-primary to-brand-cyan hover:opacity-90 text-white px-5 py-2 rounded-full font-medium transition-all shadow-lg shadow-brand-primary/30 inline-block"
+              >
                 Mulai Proyek
-              </button>
+              </a>
             </div>
           </div>
 
@@ -78,8 +89,8 @@ const Navbar = () => {
   );
 };
 
-// 2. Hero Component
-const Hero = () => {
+// 2. Hero Component (Update: Menerima props waLink)
+const Hero = ({ waLink }: { waLink: string }) => {
   const { scrollY } = useScroll();
   const y1 = useTransform(scrollY, [0, 500], [0, 200]);
 
@@ -109,12 +120,15 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <button className="bg-white text-brand-dark hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2">
+            {/* BUTTON 2: Hero (Diubah jadi Link) */}
+            <a 
+              href={waLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-white text-brand-dark hover:bg-gray-100 px-8 py-4 rounded-full font-bold text-lg transition-all flex items-center justify-center gap-2"
+            >
               Konsultasi Sekarang <ArrowRight size={20} />
-            </button>
-            {/* <button className="px-8 py-4 rounded-full font-bold text-lg border border-white/20 hover:bg-white/5 transition-all backdrop-blur-sm">
-              Lihat Portfolio
-            </button> */}
+            </a>
           </div>
         </motion.div>
       </div>
@@ -146,8 +160,8 @@ const Services = () => {
       color: "from-indigo-500 to-blue-400"
     },
     {
-      title: "UI/UX Design",
-      desc: "Desain antarmuka yang memanjakan mata dan pengalaman pengguna yang intuitif.",
+      title: "SaaS Development",
+      desc: "Software as Service yang berkualitas dan dapat membantu urusan pekerjaan menjadi lebih mudah.",
       icon: <Rocket size={40} />,
       color: "from-cyan-400 to-teal-400"
     }
@@ -241,8 +255,8 @@ const Features = () => {
                     <span className="text-brand-cyan font-mono text-sm">System Status: Online & Optimized</span>
                   </div>
                   <div className="grid grid-cols-2 gap-4">
-                     <div className="h-20 bg-white/5 rounded" />
-                     <div className="h-20 bg-white/5 rounded" />
+                      <div className="h-20 bg-white/5 rounded" />
+                      <div className="h-20 bg-white/5 rounded" />
                   </div>
                 </div>
              </div>
@@ -296,27 +310,73 @@ const Footer = () => {
 // --- APP COMPONENT ---
 
 function App() {
+  // --- REFERRAL LOGIC START ---
+  const defaultNumber = "6285797009915";
+  const [waLink, setWaLink] = useState("");
+  
+  // Pesan Default
+  const message = "Kak+Saya+mau+Konsultasi+SaaS,+AI,+dan+Website";
+
+  useEffect(() => {
+    const fetchReferral = async () => {
+      // 1. Ambil params dari URL
+      const queryParams = new URLSearchParams(window.location.search);
+      const refNumber = queryParams.get("refNumber"); 
+
+      let targetNumber = defaultNumber;
+
+      if (refNumber) {
+        // 2. Cek ke Supabase jika refNumber ada
+        const { data, error } = await supabase
+          .from('referrals')
+          .select('phone_number')
+          .eq('ref_number', refNumber)
+          .single();
+
+        if (error) {
+          console.error("Referral error or not found:", error.message);
+        } else if (data) {
+          targetNumber = data.phone_number;
+        }
+      }
+
+      // 3. Update State Link WA
+      setWaLink(`https://wa.me/${targetNumber}?text=${message}`);
+    };
+
+    fetchReferral();
+  }, []);
+  // --- REFERRAL LOGIC END ---
+
   return (
     <div className="bg-brand-dark min-h-screen text-white selection:bg-brand-cyan selection:text-brand-dark font-sans">
-      <Navbar />
+      <Navbar waLink={waLink} />
       <main>
-        <Hero />
+        <Hero waLink={waLink} />
         <Services /> {/* id="services" */}
         
-        <Process />  {/* id="process" (BARU) */}
+        <Process />  {/* id="process" */}
         
         <Features /> {/* Why Choose Us */}
         
-        <About />    {/* id="about" (BARU) */}
+        <About />    {/* id="about" */}
+        
         {/* Call to Action Section */}
         <section className="py-20 px-4">
           <div className="max-w-5xl mx-auto bg-gradient-to-r from-brand-primary to-brand-cyan rounded-3xl p-10 md:p-16 text-center relative overflow-hidden">
              <div className="relative z-10">
                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Siap Memulai Proyek Anda?</h2>
                <p className="text-white/90 text-lg mb-8 max-w-2xl mx-auto">Jangan biarkan ide hebat Anda hanya menjadi angan-angan. Mari realisasikan bersama tim expert kami.</p>
-               <button className="bg-white text-brand-primary px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:scale-105 transition-all">
+               
+               {/* BUTTON 3: Bottom CTA (Diubah jadi Link) */}
+               <a 
+                 href={waLink}
+                 target="_blank"
+                 rel="noopener noreferrer"
+                 className="bg-white text-brand-primary px-10 py-4 rounded-full font-bold text-lg hover:shadow-xl hover:scale-105 transition-all inline-block"
+               >
                  Hubungi Kami Sekarang
-               </button>
+               </a>
              </div>
              {/* Background Decoration */}
              <div className="absolute top-0 left-0 w-full h-full bg-pattern opacity-10" />
