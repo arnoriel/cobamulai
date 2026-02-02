@@ -11,14 +11,14 @@ import {
   Search,
   User,
   AlertTriangle,
-  X
+  X,
+  RefreshCw // Tambahkan icon refresh buat jaga-jaga mau ganti angka manual
 } from 'lucide-react';
 import { supabase } from '../supabaseClient';
 
-// Update interface sesuai screenshot Supabase kamu
 interface Referral {
   id: number;
-  name: string; // Tambahkan field name
+  name: string;
   ref_number: string;
   phone_number: string;
   created_at: string;
@@ -26,18 +26,25 @@ interface Referral {
 
 const Deshboard = () => {
   const [referrals, setReferrals] = useState<Referral[]>([]);
+  // Inisialisasi ref_number kosong dulu, nanti diisi via useEffect
   const [newRef, setNewRef] = useState({ name: '', ref_number: '', phone_number: '' });
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<number | null>(null);
   
-  // State untuk Modal Konfirmasi Hapus
   const [deleteModal, setDeleteModal] = useState<{show: boolean, id: number | null}>({
     show: false,
     id: null
   });
 
+  // Fungsi Helper untuk generate angka acak
+  const generateRandomRef = () => {
+    return Math.floor(10000000 + Math.random() * 90000000).toString();
+  };
+
   useEffect(() => {
     fetchReferrals();
+    // Isi ref_number otomatis saat pertama kali load
+    setNewRef(prev => ({ ...prev, ref_number: generateRandomRef() }));
   }, []);
 
   const fetchReferrals = async () => {
@@ -53,6 +60,7 @@ const Deshboard = () => {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Validasi dasar
     if (!newRef.name || !newRef.ref_number || !newRef.phone_number) return;
 
     const { error } = await supabase
@@ -60,21 +68,22 @@ const Deshboard = () => {
       .insert([newRef]);
 
     if (!error) {
-      setNewRef({ name: '', ref_number: '', phone_number: '' });
+      // Reset form dan generate angka baru lagi untuk input selanjutnya
+      setNewRef({ 
+        name: '', 
+        ref_number: generateRandomRef(), 
+        phone_number: '' 
+      });
       fetchReferrals();
     } else {
       alert("Error adding data: " + error.message);
     }
   };
 
+  // ... fungsi confirmDelete dan copyToClipboard tetap sama ...
   const confirmDelete = async () => {
     if (!deleteModal.id) return;
-
-    const { error } = await supabase
-      .from('referrals')
-      .delete()
-      .eq('id', deleteModal.id);
-
+    const { error } = await supabase.from('referrals').delete().eq('id', deleteModal.id);
     if (!error) {
       fetchReferrals();
       setDeleteModal({ show: false, id: null });
@@ -86,7 +95,6 @@ const Deshboard = () => {
   const copyToClipboard = (refNumber: string, id: number) => {
     const baseUrl = window.location.origin;
     const fullLink = `${baseUrl}/?refNumber=${refNumber}`;
-    
     navigator.clipboard.writeText(fullLink);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 2000);
@@ -94,14 +102,12 @@ const Deshboard = () => {
 
   return (
     <div className="min-h-screen bg-brand-dark text-white p-6 md:p-12 font-sans relative">
-      {/* Background Decor */}
       <div className="fixed top-0 left-0 w-full h-full overflow-hidden pointer-events-none -z-10">
         <div className="absolute top-[-10%] right-[-10%] w-96 h-96 bg-brand-primary/10 rounded-full blur-[120px]" />
         <div className="absolute bottom-[-10%] left-[-10%] w-96 h-96 bg-brand-cyan/10 rounded-full blur-[120px]" />
       </div>
 
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
         <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Referral <span className="text-brand-cyan">Management</span></h1>
@@ -112,7 +118,6 @@ const Deshboard = () => {
           </a>
         </div>
 
-        {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
           <div className="bg-brand-navy/50 border border-white/10 p-6 rounded-2xl">
             <div className="flex items-center gap-4">
@@ -126,7 +131,6 @@ const Deshboard = () => {
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
-          {/* Form Add */}
           <div className="lg:col-span-1">
             <div className="bg-brand-navy border border-white/10 p-6 rounded-2xl sticky top-8">
               <h2 className="text-xl font-semibold mb-6 flex items-center gap-2">
@@ -145,15 +149,23 @@ const Deshboard = () => {
                   />
                 </div>
                 <div>
-                  <label className="block text-sm text-gray-400 mb-2">Ref Number / Kode</label>
-                  <input 
-                    type="text"
-                    required
-                    placeholder="Contoh: 0123123"
-                    className="w-full bg-brand-dark border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-brand-cyan transition-all"
-                    value={newRef.ref_number}
-                    onChange={(e) => setNewRef({...newRef, ref_number: e.target.value})}
-                  />
+                  <label className="block text-sm text-gray-400 mb-2">Ref Number (Otomatis)</label>
+                  <div className="relative">
+                    <input 
+                      type="text"
+                      readOnly // Dibuat readOnly supaya user nggak capek ngisi
+                      className="w-full bg-brand-dark/50 border border-white/10 rounded-xl px-4 py-3 text-gray-400 cursor-not-allowed focus:outline-none"
+                      value={newRef.ref_number}
+                    />
+                    <button 
+                      type="button"
+                      onClick={() => setNewRef({...newRef, ref_number: generateRandomRef()})}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-500 hover:text-brand-cyan"
+                      title="Ganti angka acak"
+                    >
+                      <RefreshCw size={18} />
+                    </button>
+                  </div>
                 </div>
                 <div>
                   <label className="block text-sm text-gray-400 mb-2">WhatsApp</label>
@@ -176,7 +188,6 @@ const Deshboard = () => {
             </div>
           </div>
 
-          {/* Table List */}
           <div className="lg:col-span-2">
             <div className="bg-brand-navy/30 border border-white/10 rounded-2xl overflow-hidden backdrop-blur-sm">
               <div className="p-6 border-b border-white/5 flex justify-between items-center">
@@ -253,7 +264,7 @@ const Deshboard = () => {
         </div>
       </div>
 
-      {/* CUSTOM MODAL DELETE */}
+      {/* Modal Delete Tetap Sama */}
       <AnimatePresence>
         {deleteModal.show && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
