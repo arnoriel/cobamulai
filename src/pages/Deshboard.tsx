@@ -60,15 +60,22 @@ const Deshboard = () => {
 
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Validasi dasar
-    if (!newRef.name || !newRef.ref_number || !newRef.phone_number) return;
+
+    const cleanedPhoneNumber = newRef.phone_number.replace(/\D/g, '');
+
+    if (!newRef.name || !newRef.ref_number || !cleanedPhoneNumber) {
+      alert("Mohon isi semua data dengan benar.");
+      return;
+    }
 
     const { error } = await supabase
       .from('referrals')
-      .insert([newRef]);
+      .insert([{
+        ...newRef,
+        phone_number: cleanedPhoneNumber
+      }]);
 
     if (!error) {
-      // Reset form dan generate angka baru lagi untuk input selanjutnya
       setNewRef({ 
         name: '', 
         ref_number: generateRandomRef(), 
