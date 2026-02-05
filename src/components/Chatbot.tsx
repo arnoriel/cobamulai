@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageSquare, X, Send, Bot, Loader2 } from 'lucide-react';
 import { getAIResponse } from '../services/aiService';
+import ReactMarkdown from 'react-markdown';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -24,9 +25,14 @@ const Chatbot = () => {
     setInput('');
     setIsLoading(true);
 
-    const aiRes = await getAIResponse(input);
-    setMessages(prev => [...prev, { role: 'ai', content: aiRes }]);
-    setIsLoading(false);
+    try {
+      const aiRes = await getAIResponse(input);
+      setMessages(prev => [...prev, { role: 'ai', content: aiRes }]);
+    } catch (error) {
+      console.error("Error sending message:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -46,7 +52,7 @@ const Chatbot = () => {
                   <Bot size={20} className="text-brand-cyan" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-sm">AI Assistant</h3>
+                  <h3 className="text-white font-bold text-sm">cobamul-ai</h3>
                   <p className="text-[10px] text-brand-cyan flex items-center gap-1">
                     <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Online
                   </p>
@@ -58,12 +64,37 @@ const Chatbot = () => {
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[80%] p-3 rounded-2xl text-sm ${
+                  <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
                     msg.role === 'user' 
                       ? 'bg-brand-cyan text-brand-dark font-medium rounded-tr-none' 
                       : 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-none'
                   }`}>
-                    {msg.content}
+                    {msg.role === 'user' ? (
+                      msg.content
+                    ) : (
+                      /* Bungkus dengan div untuk styling Tailwind, hapus className dari ReactMarkdown */
+                      <div className="prose prose-invert prose-sm max-w-none text-gray-200 leading-relaxed">
+                        <ReactMarkdown 
+                          components={{
+                            p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
+                            ul: ({ node, ...props }) => <ul className="list-disc ml-4 mb-2" {...props} />,
+                            ol: ({ node, ...props }) => <ol className="list-decimal ml-4 mb-2" {...props} />,
+                            li: ({ node, ...props }) => <li className="mb-1" {...props} />,
+                            strong: ({ node, ...props }) => <strong className="text-brand-cyan font-bold" {...props} />,
+                            a: ({ node, ...props }) => (
+                              <a 
+                                className="text-brand-cyan underline hover:opacity-80 transition-opacity" 
+                                target="_blank" 
+                                rel="noopener noreferrer" 
+                                {...props} 
+                              />
+                            ),
+                          }}
+                        >
+                          {msg.content}
+                        </ReactMarkdown>
+                      </div>
+                    )}
                   </div>
                 </div>
               ))}
@@ -89,7 +120,8 @@ const Chatbot = () => {
                 />
                 <button 
                   onClick={handleSend}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-cyan rounded-full flex items-center justify-center text-brand-dark hover:scale-110 transition-transform"
+                  disabled={isLoading}
+                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-cyan rounded-full flex items-center justify-center text-brand-dark hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
                 >
                   <Send size={14} />
                 </button>
@@ -107,7 +139,25 @@ const Chatbot = () => {
         className="w-16 h-16 bg-gradient-to-tr from-brand-primary to-brand-cyan rounded-full flex items-center justify-center shadow-lg shadow-brand-cyan/20 text-white relative group"
       >
         <AnimatePresence mode="wait">
-          {isOpen ? <X key="x" /> : <MessageSquare key="msg" />}
+          {isOpen ? (
+            <motion.div
+              key="x"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+            >
+              <X />
+            </motion.div>
+          ) : (
+            <motion.div
+              key="msg"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+            >
+              <MessageSquare />
+            </motion.div>
+          )}
         </AnimatePresence>
       </motion.button>
     </div>

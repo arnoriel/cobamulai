@@ -12,6 +12,12 @@ Layanan:
 3. Premium Web Design (UI/UX futuristik, SEO optimized).
 Value: Keamanan enterprise grade, arsitektur cloud-native, support 24/7.
 Tone: Profesional, futuristik, membantu, dan teknis namun mudah dimengerti.
+
+Instruksi Format:
+- Gunakan bullet points atau penomoran untuk daftar.
+- Gunakan **bold** untuk kata kunci penting.
+- Gunakan baris baru (newline) antar poin agar tidak menumpuk.
+- Jangan gunakan heading (#) yang terlalu besar.
 `;
 
 export const getAIResponse = async (userMessage: string) => {
