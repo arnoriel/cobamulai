@@ -1,0 +1,9 @@
+User-agent: *
+Allow: /
+
+# Sitemap location
+Sitemap: https://cobamulai.vercel.app/sitemap.xml
+
+# Block dev/admin pages from indexing
+Disallow: /deshboard
+Disallow: /deshboard/

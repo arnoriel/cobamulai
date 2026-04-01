@@ -20,6 +20,7 @@ import { supabase } from './supabaseClient';
 import Process from './components/Process';
 import Chatbot from './components/Chatbot';
 import About from './components/About';
+import Portfolio from './components/Portofolio';
 
 // --- COMPONENTS ---
 
@@ -46,7 +47,7 @@ const Navbar = ({ waLink }: { waLink: string }) => {
           {/* Desktop Menu */}
           <div className="hidden md:block">
             <div className="ml-10 flex items-center space-x-8">
-              {['Home', 'Services', 'Process', 'About'].map((item) => (
+              {['Home', 'Services', 'Portfolio', 'Process', 'About'].map((item) => (
                 <a key={item} href={`#${item.toLowerCase()}`} className="relative text-sm font-medium text-gray-300 hover:text-white transition-colors group">
                   {item}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-cyan transition-all group-hover:w-full" />
@@ -86,7 +87,7 @@ const Navbar = ({ waLink }: { waLink: string }) => {
             className="md:hidden bg-brand-dark/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
-              {['Home', 'Services', 'Process', 'About'].map((item) => (
+              {['Home', 'Services', 'Portfolio', 'Process', 'About'].map((item) => (
                 <a key={item} onClick={() => setIsOpen(false)} href={`#${item.toLowerCase()}`} className="block px-3 py-3 rounded-lg hover:bg-white/5 text-base font-medium text-gray-300 hover:text-white transition-colors">
                   {item}
                 </a>
@@ -492,6 +493,8 @@ function App() {
       <main>
         <Hero waLink={waLink} />
         <Services /> 
+        
+        <Portfolio />
         
         <Process /> 
         

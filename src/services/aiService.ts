@@ -29,7 +29,7 @@ export const getAIResponse = async (userMessage: string) => {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'arcee-ai/trinity-large-preview:free',
+        model: 'qwen/qwen3.6-plus-preview:free',
         messages: [
           { 
             role: 'system', 
