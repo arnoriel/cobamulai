@@ -1,5 +1,6 @@
+import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Globe, Sparkles } from 'lucide-react';
+import { ExternalLink, Globe, Sparkles, Monitor } from 'lucide-react';
 
 interface Project {
   title: string;
@@ -9,6 +10,7 @@ interface Project {
   tagColor: string;
   accentColor: string;
   tech: string[];
+  previewBg: string; // fallback gradient when iframe is blocked
 }
 
 const projects: Project[] = [
@@ -21,6 +23,7 @@ const projects: Project[] = [
     tagColor: "text-purple-400",
     accentColor: "from-purple-500/20 to-indigo-500/20",
     tech: ["React", "FastAPI", "FFmpeg", "Supabase"],
+    previewBg: "from-purple-900/60 via-indigo-900/40 to-brand-dark",
   },
   {
     title: "The Sunnah Marketing",
@@ -31,11 +34,84 @@ const projects: Project[] = [
     tagColor: "text-emerald-400",
     accentColor: "from-emerald-500/20 to-teal-500/20",
     tech: ["React", "Vite", "Tailwind", "SSR"],
+    previewBg: "from-emerald-900/60 via-teal-900/40 to-brand-dark",
+  },
+  {
+    title: "Alsytes",
+    description:
+      "AI Website Generator berbasis agen — buat website profesional hanya dengan deskripsi teks. Powered by agentic AI pipeline yang otomatis handle desain, konten, hingga deployment.",
+    url: "https://alsytes.dev",
+    tag: "SaaS · AI Builder",
+    tagColor: "text-cyan-400",
+    accentColor: "from-cyan-500/20 to-blue-500/20",
+    tech: ["Next.js", "AI Agent", "TypeScript", "Vercel"],
+    previewBg: "from-cyan-900/60 via-blue-900/40 to-brand-dark",
+  },
+  {
+    title: "Benvenuto",
+    description:
+      "Website restoran premium bergaya Italia — desain immersive dengan animasi sinematik, menu interaktif, dan experience visual yang mengundang selera.",
+    url: "https://benvenuto-beta.vercel.app",
+    tag: "Web Design · Resto",
+    tagColor: "text-amber-400",
+    accentColor: "from-amber-500/20 to-orange-500/20",
+    tech: ["React", "Framer Motion", "Tailwind", "Vercel"],
+    previewBg: "from-amber-900/60 via-orange-900/40 to-brand-dark",
   },
 ];
 
-// Scaled iframe preview that links to the actual site
-const SitePreview = ({ url, title }: { url: string; title: string }) => {
+// ─── FIX Bug #2, #3, #4: Iframe preview with dynamic scale + blocked fallback ───
+const SitePreview = ({
+  url,
+  title,
+  previewBg,
+}: {
+  url: string;
+  title: string;
+  previewBg: string;
+}) => {
+  const wrapperRef = useRef<HTMLDivElement>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
+  const [scale, setScale] = useState(0.38);
+  const [blocked, setBlocked] = useState(false);
+  const [loaded, setLoaded] = useState(false);
+
+  // Bug #2 fix: compute scale dynamically so iframe fills the container width
+  useEffect(() => {
+    if (!wrapperRef.current) return;
+    const VIRTUAL_W = 1440;
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        setScale(entry.contentRect.width / VIRTUAL_W);
+      }
+    });
+    ro.observe(wrapperRef.current);
+    return () => ro.disconnect();
+  }, []);
+
+  // Detect X-Frame-Options block correctly:
+  // - SecurityError thrown → cross-origin content LOADED SUCCESSFULLY → don't block
+  // - contentDocument accessible but body empty → site IS blocked by X-Frame-Options
+  const handleLoad = () => {
+    setLoaded(true);
+    try {
+      const doc =
+        iframeRef.current?.contentDocument ??
+        iframeRef.current?.contentWindow?.document;
+      // Can access doc = same-origin or X-Frame-Options blocked (empty doc)
+      if (doc && (!doc.body || doc.body.innerHTML.trim() === '')) {
+        setBlocked(true);
+      }
+      // else: has content → show the iframe
+    } catch {
+      // SecurityError = cross-origin content loaded fine → NOT blocked, show iframe!
+    }
+  };
+
+  const VIRTUAL_H = 900;
+  // Bug #4 fix: container height matches actual scaled iframe height (capped at 210px)
+  const previewH = Math.min(Math.round(VIRTUAL_H * scale), 210);
+
   return (
     <a
       href={url}
@@ -43,7 +119,6 @@ const SitePreview = ({ url, title }: { url: string; title: string }) => {
       rel="noopener noreferrer"
       aria-label={`Buka ${title} di tab baru`}
       className="block group/preview relative overflow-hidden rounded-xl bg-brand-navy border border-white/5"
-      style={{ height: '240px' }}
     >
       {/* Browser chrome header */}
       <div className="relative z-10 flex items-center gap-2 px-4 py-2.5 bg-[#0D1117] border-b border-white/5">
@@ -55,27 +130,53 @@ const SitePreview = ({ url, title }: { url: string; title: string }) => {
         <div className="flex-1 mx-2 bg-white/5 rounded-md px-3 py-1 text-[10px] text-gray-500 font-mono truncate">
           {url.replace('https://', '')}
         </div>
-        <ExternalLink size={12} className="text-gray-600 group-hover/preview:text-brand-cyan transition-colors flex-shrink-0" />
+        <ExternalLink
+          size={12}
+          className="text-gray-600 group-hover/preview:text-brand-cyan transition-colors flex-shrink-0"
+        />
       </div>
 
-      {/* Scaled iframe preview */}
-      <div className="relative overflow-hidden" style={{ height: '192px' }}>
-        <iframe
-          src={url}
-          title={title}
-          scrolling="no"
-          tabIndex={-1}
-          loading="lazy"
-          style={{
-            width: '1440px',
-            height: '900px',
-            transform: 'scale(0.266)',
-            transformOrigin: 'top left',
-            pointerEvents: 'none',
-            border: 'none',
-            display: 'block',
-          }}
-        />
+      {/* Preview area */}
+      <div
+        ref={wrapperRef}
+        className="relative overflow-hidden w-full"
+        style={{ height: `${previewH}px` }}
+      >
+        {/* Iframe (hidden when blocked) */}
+        {!blocked && (
+          <iframe
+            ref={iframeRef}
+            src={url}
+            title={title}
+            scrolling="no"
+            tabIndex={-1}
+            loading="lazy"
+            onLoad={handleLoad}
+            style={{
+              width: '1440px',
+              height: `${VIRTUAL_H}px`,
+              transform: `scale(${scale})`,
+              transformOrigin: 'top left',
+              pointerEvents: 'none',
+              border: 'none',
+              display: 'block',
+              opacity: loaded ? 1 : 0,
+              transition: 'opacity 0.4s ease',
+            }}
+          />
+        )}
+
+        {/* Fallback: shown when iframe blocked OR while loading */}
+        {(blocked || !loaded) && (
+          <div
+            className={`absolute inset-0 bg-gradient-to-br ${previewBg} flex flex-col items-center justify-center gap-3`}
+          >
+            <Monitor size={28} className="text-white/30" />
+            <span className="text-white/40 text-xs font-mono">
+              {url.replace('https://', '')}
+            </span>
+          </div>
+        )}
 
         {/* Hover overlay with visit CTA */}
         <div className="absolute inset-0 bg-brand-dark/0 group-hover/preview:bg-brand-dark/60 transition-all duration-300 flex items-center justify-center">
@@ -126,7 +227,7 @@ const Portfolio = () => {
           </div>
         </motion.div>
 
-        {/* Projects Grid */}
+        {/* Projects Grid — 2 columns */}
         <div className="grid md:grid-cols-2 gap-8">
           {projects.map((project, index) => (
             <motion.div
@@ -134,7 +235,7 @@ const Portfolio = () => {
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.15, duration: 0.6 }}
+              transition={{ delay: index * 0.12, duration: 0.6 }}
               className="group relative rounded-3xl bg-brand-navy/40 border border-white/5 overflow-hidden hover:border-white/15 transition-all duration-500"
             >
               {/* Hover gradient bg */}
@@ -144,13 +245,19 @@ const Portfolio = () => {
 
               <div className="relative z-10 p-6 flex flex-col gap-5">
                 {/* Site Preview */}
-                <SitePreview url={project.url} title={project.title} />
+                <SitePreview
+                  url={project.url}
+                  title={project.title}
+                  previewBg={project.previewBg}
+                />
 
                 {/* Project Info */}
                 <div className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <span className={`text-xs font-mono font-semibold ${project.tagColor} uppercase tracking-widest`}>
+                      <span
+                        className={`text-xs font-mono font-semibold ${project.tagColor} uppercase tracking-widest`}
+                      >
                         {project.tag}
                       </span>
                       <h3 className="text-xl font-bold text-white mt-1 group-hover:text-brand-cyan transition-colors">

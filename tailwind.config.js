@@ -8,17 +8,32 @@ export default {
     extend: {
       colors: {
         brand: {
-          dark: "#020617",       // Biru sangat tua (hampir hitam) untuk background
-          navy: "#0f172a",       // Biru tua elegan untuk card
-          primary: "#2563eb",    // Biru standar
-          light: "#3b82f6",      // Biru terang
-          cyan: "#06b6d4",       // Aksen cyan modern
-          glow: "#60a5fa",       // Warna untuk efek glow
+          dark: "#020617",
+          navy: "#0f172a",
+          primary: "#2563eb",
+          light: "#3b82f6",
+          cyan: "#06b6d4",
+          glow: "#60a5fa",
         }
       },
       fontFamily: {
-        sans: ['Inter', 'sans-serif'], // Pastikan import font ini di index.css atau pakai font default
-      }
+        sans: ['Inter', 'sans-serif'],
+      },
+      keyframes: {
+        'gradient-x': {
+          '0%, 100%': {
+            'background-size': '200% 200%',
+            'background-position': 'left center',
+          },
+          '50%': {
+            'background-size': '200% 200%',
+            'background-position': 'right center',
+          },
+        },
+      },
+      animation: {
+        'gradient-x': 'gradient-x 4s ease infinite',
+      },
     },
   },
   plugins: [],

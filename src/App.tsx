@@ -21,6 +21,7 @@ import Process from './components/Process';
 import Chatbot from './components/Chatbot';
 import About from './components/About';
 import Portfolio from './components/Portofolio';
+import Packages from './components/Packages';
 
 // --- COMPONENTS ---
 
@@ -45,9 +46,9 @@ const Navbar = ({ waLink }: { waLink: string }) => {
           </div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:block">
-            <div className="ml-10 flex items-center space-x-8">
-              {['Home', 'Services', 'Portfolio', 'Process', 'About'].map((item) => (
+          <div className="hidden lg:block">
+            <div className="ml-6 flex items-center space-x-5">
+              {['Home', 'Services', 'Portfolio', 'Process', 'About', 'Packages'].map((item) => (
                 <a key={item} href={`#${item.toLowerCase()}`} className="relative text-sm font-medium text-gray-300 hover:text-white transition-colors group">
                   {item}
                   <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-cyan transition-all group-hover:w-full" />
@@ -69,7 +70,7 @@ const Navbar = ({ waLink }: { waLink: string }) => {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden">
+          <div className="lg:hidden">
             <button onClick={() => setIsOpen(!isOpen)} className="text-white p-2">
               {isOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
@@ -84,10 +85,10 @@ const Navbar = ({ waLink }: { waLink: string }) => {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden bg-brand-dark/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
+            className="lg:hidden bg-brand-dark/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
           >
             <div className="px-4 pt-2 pb-6 space-y-2">
-              {['Home', 'Services', 'Portfolio', 'Process', 'About'].map((item) => (
+              {['Home', 'Services', 'Portfolio', 'Process', 'About', 'Packages'].map((item) => (
                 <a key={item} onClick={() => setIsOpen(false)} href={`#${item.toLowerCase()}`} className="block px-3 py-3 rounded-lg hover:bg-white/5 text-base font-medium text-gray-300 hover:text-white transition-colors">
                   {item}
                 </a>
@@ -121,8 +122,8 @@ const Hero = ({ waLink }: { waLink: string }) => {
       <div className="absolute inset-0 bg-brand-dark [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,transparent_70%,#000_100%)]"></div>
       
       {/* Ambient Glows */}
-      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] mix-blend-screen animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[20%] w-[500px] h-[500px] bg-brand-cyan/10 rounded-full blur-[120px] mix-blend-screen" />
+      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] animate-pulse" />
+      <div className="absolute bottom-[-10%] right-[20%] w-[500px] h-[500px] bg-brand-cyan/10 rounded-full blur-[120px]" />
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
         <motion.div
@@ -501,6 +502,8 @@ function App() {
         <Features /> 
         
         <About /> 
+        
+        <Packages waLink={waLink} />
         
         {/* Call to Action Section (Premium Warp Style) */}
         <section className="py-32 px-4 relative overflow-hidden">
