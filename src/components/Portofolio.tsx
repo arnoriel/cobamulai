@@ -1,295 +1,255 @@
-import { useRef, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Globe, Sparkles, Monitor } from 'lucide-react';
+import { ExternalLink, Sparkles, Globe } from 'lucide-react';
 
 interface Project {
   title: string;
   description: string;
   url: string;
   tag: string;
-  tagColor: string;
-  accentColor: string;
   tech: string[];
-  previewBg: string; // fallback gradient when iframe is blocked
+  accent: string;
+  accentLight: string;
+  initial: string;
+  gradient: string;
+  mockupLines: string[];
 }
 
 const projects: Project[] = [
   {
-    title: "CuanClip AI",
+    title: 'CuanClip AI',
     description:
-      "Platform AI video clipping otomatis — unggah video panjang, dapatkan klip pendek viral siap upload dalam hitungan menit. Didukung teknologi FFmpeg & AI.",
-    url: "https://ai.cuanclip.com",
-    tag: "SaaS · AI Video",
-    tagColor: "text-purple-400",
-    accentColor: "from-purple-500/20 to-indigo-500/20",
-    tech: ["React", "FastAPI", "FFmpeg", "Supabase"],
-    previewBg: "from-purple-900/60 via-indigo-900/40 to-brand-dark",
+      'Platform AI video clipping otomatis — unggah video panjang, dapatkan klip pendek viral siap upload dalam hitungan menit. Didukung teknologi FFmpeg & AI.',
+    url: 'https://ai.cuanclip.com',
+    tag: 'SAAS · AI VIDEO',
+    tech: ['React', 'FastAPI', 'FFmpeg', 'Supabase'],
+    accent: '#7C3AED',
+    accentLight: '#EDE9FE',
+    initial: 'CC',
+    gradient: 'from-purple-600 via-indigo-600 to-violet-700',
+    mockupLines: ['████████████████████', '█████████████', '██████████████████████'],
   },
   {
-    title: "The Sunnah Marketing",
+    title: 'The Sunnah Marketing',
     description:
-      "Agensi digital marketing halal — strategi konten, iklan, dan branding untuk bisnis Muslim yang ingin tumbuh secara etis dan konsisten.",
-    url: "https://thesunnahmarketing.com",
-    tag: "Agency · Marketing",
-    tagColor: "text-emerald-400",
-    accentColor: "from-emerald-500/20 to-teal-500/20",
-    tech: ["React", "Vite", "Tailwind", "SSR"],
-    previewBg: "from-emerald-900/60 via-teal-900/40 to-brand-dark",
+      'Agensi digital marketing halal — strategi konten, iklan, dan branding untuk bisnis Muslim yang ingin tumbuh secara etis dan konsisten.',
+    url: 'https://thesunnahmarketing.com',
+    tag: 'AGENCY · MARKETING',
+    tech: ['React', 'Vite', 'Tailwind', 'SSR'],
+    accent: '#059669',
+    accentLight: '#D1FAE5',
+    initial: 'SM',
+    gradient: 'from-emerald-600 via-teal-600 to-green-700',
+    mockupLines: ['████████████████████', '███████████', '████████████████████████'],
   },
   {
-    title: "Alsytes",
+    title: 'Alsytes',
     description:
-      "AI Website Generator berbasis agen — buat website profesional hanya dengan deskripsi teks. Powered by agentic AI pipeline yang otomatis handle desain, konten, hingga deployment.",
-    url: "https://alsytes.dev",
-    tag: "SaaS · AI Builder",
-    tagColor: "text-cyan-400",
-    accentColor: "from-cyan-500/20 to-blue-500/20",
-    tech: ["Next.js", "AI Agent", "TypeScript", "Vercel"],
-    previewBg: "from-cyan-900/60 via-blue-900/40 to-brand-dark",
+      'AI Website Generator berbasis agen — buat website profesional hanya dengan deskripsi teks. Powered by agentic AI pipeline yang otomatis handle desain hingga deployment.',
+    url: 'https://alsytes.dev',
+    tag: 'SAAS · AI BUILDER',
+    tech: ['Next.js', 'AI Agent', 'TypeScript', 'Vercel'],
+    accent: '#0EA5E9',
+    accentLight: '#E0F2FE',
+    initial: 'AL',
+    gradient: 'from-cyan-600 via-sky-600 to-blue-700',
+    mockupLines: ['██████████████████', '████████████████████████', '███████████'],
   },
   {
-    title: "Benvenuto",
+    title: 'Benvenuto',
     description:
-      "Website restoran premium bergaya Italia — desain immersive dengan animasi sinematik, menu interaktif, dan experience visual yang mengundang selera.",
-    url: "https://benvenuto-beta.vercel.app",
-    tag: "Web Design · Resto",
-    tagColor: "text-amber-400",
-    accentColor: "from-amber-500/20 to-orange-500/20",
-    tech: ["React", "Framer Motion", "Tailwind", "Vercel"],
-    previewBg: "from-amber-900/60 via-orange-900/40 to-brand-dark",
+      'Website restoran premium bergaya Italia — desain immersive dengan animasi sinematik, menu interaktif, dan experience visual yang mengundang selera.',
+    url: 'https://benvenuto-beta.vercel.app',
+    tag: 'WEB DESIGN · RESTO',
+    tech: ['React', 'Framer Motion', 'Tailwind', 'Vercel'],
+    accent: '#D97706',
+    accentLight: '#FEF3C7',
+    initial: 'BV',
+    gradient: 'from-amber-500 via-orange-500 to-yellow-600',
+    mockupLines: ['█████████████████████', '█████████████', '██████████████████████'],
   },
 ];
 
-// ─── FIX Bug #2, #3, #4: Iframe preview with dynamic scale + blocked fallback ───
-const SitePreview = ({
-  url,
-  title,
-  previewBg,
-}: {
-  url: string;
-  title: string;
-  previewBg: string;
-}) => {
-  const wrapperRef = useRef<HTMLDivElement>(null);
-  const iframeRef = useRef<HTMLIFrameElement>(null);
-  const [scale, setScale] = useState(0.38);
-  const [blocked, setBlocked] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+// Local gradient mockup — no external service, no auth errors
+const ProjectMockup = ({ project }: { project: Project }) => (
+  <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg">
+    {/* Browser chrome */}
+    <div className="bg-[#1e1e2e] px-4 py-2.5 flex items-center gap-3">
+      <div className="flex gap-1.5 flex-shrink-0">
+        <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+        <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+        <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+      </div>
+      <div className="flex-1 bg-white/8 rounded-md px-3 py-1 flex items-center gap-1.5 min-w-0">
+        <Globe size={10} className="text-slate-400 flex-shrink-0" />
+        <span className="text-[11px] text-slate-400 font-mono truncate">
+          {project.url.replace('https://', '')}
+        </span>
+      </div>
+    </div>
 
-  // Bug #2 fix: compute scale dynamically so iframe fills the container width
-  useEffect(() => {
-    if (!wrapperRef.current) return;
-    const VIRTUAL_W = 1440;
-    const ro = new ResizeObserver((entries) => {
-      for (const entry of entries) {
-        setScale(entry.contentRect.width / VIRTUAL_W);
-      }
-    });
-    ro.observe(wrapperRef.current);
-    return () => ro.disconnect();
-  }, []);
-
-  // Detect X-Frame-Options block correctly:
-  // - SecurityError thrown → cross-origin content LOADED SUCCESSFULLY → don't block
-  // - contentDocument accessible but body empty → site IS blocked by X-Frame-Options
-  const handleLoad = () => {
-    setLoaded(true);
-    try {
-      const doc =
-        iframeRef.current?.contentDocument ??
-        iframeRef.current?.contentWindow?.document;
-      // Can access doc = same-origin or X-Frame-Options blocked (empty doc)
-      if (doc && (!doc.body || doc.body.innerHTML.trim() === '')) {
-        setBlocked(true);
-      }
-      // else: has content → show the iframe
-    } catch {
-      // SecurityError = cross-origin content loaded fine → NOT blocked, show iframe!
-    }
-  };
-
-  const VIRTUAL_H = 900;
-  // Bug #4 fix: container height matches actual scaled iframe height (capped at 210px)
-  const previewH = Math.min(Math.round(VIRTUAL_H * scale), 210);
-
-  return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={`Buka ${title} di tab baru`}
-      className="block group/preview relative overflow-hidden rounded-xl bg-brand-navy border border-white/5"
+    {/* Gradient preview area */}
+    <div
+      className={`bg-gradient-to-br ${project.gradient} relative overflow-hidden`}
+      style={{ height: 220 }}
     >
-      {/* Browser chrome header */}
-      <div className="relative z-10 flex items-center gap-2 px-4 py-2.5 bg-[#0D1117] border-b border-white/5">
-        <div className="flex gap-1.5">
-          <span className="w-2.5 h-2.5 rounded-full bg-red-500/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/70" />
-          <span className="w-2.5 h-2.5 rounded-full bg-green-500/70" />
-        </div>
-        <div className="flex-1 mx-2 bg-white/5 rounded-md px-3 py-1 text-[10px] text-gray-500 font-mono truncate">
-          {url.replace('https://', '')}
-        </div>
-        <ExternalLink
-          size={12}
-          className="text-gray-600 group-hover/preview:text-brand-cyan transition-colors flex-shrink-0"
-        />
-      </div>
-
-      {/* Preview area */}
+      {/* Subtle noise texture */}
       <div
-        ref={wrapperRef}
-        className="relative overflow-hidden w-full"
-        style={{ height: `${previewH}px` }}
-      >
-        {/* Iframe (hidden when blocked) */}
-        {!blocked && (
-          <iframe
-            ref={iframeRef}
-            src={url}
-            title={title}
-            scrolling="no"
-            tabIndex={-1}
-            loading="lazy"
-            onLoad={handleLoad}
-            style={{
-              width: '1440px',
-              height: `${VIRTUAL_H}px`,
-              transform: `scale(${scale})`,
-              transformOrigin: 'top left',
-              pointerEvents: 'none',
-              border: 'none',
-              display: 'block',
-              opacity: loaded ? 1 : 0,
-              transition: 'opacity 0.4s ease',
-            }}
-          />
-        )}
+        className="absolute inset-0 opacity-20 pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.5'/%3E%3C/svg%3E")`,
+        }}
+      />
 
-        {/* Fallback: shown when iframe blocked OR while loading */}
-        {(blocked || !loaded) && (
-          <div
-            className={`absolute inset-0 bg-gradient-to-br ${previewBg} flex flex-col items-center justify-center gap-3`}
-          >
-            <Monitor size={28} className="text-white/30" />
-            <span className="text-white/40 text-xs font-mono">
-              {url.replace('https://', '')}
-            </span>
+      {/* Mock site UI */}
+      <div className="relative z-10 p-5 h-full flex flex-col justify-between">
+        {/* Top: logo + nav */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center font-display font-bold text-white text-sm flex-shrink-0">
+              {project.initial}
+            </div>
+            <div className="space-y-1.5">
+              <div className="w-24 h-2 bg-white/35 rounded-full" />
+              <div className="w-14 h-1.5 bg-white/20 rounded-full" />
+            </div>
           </div>
-        )}
+          <div className="flex gap-2">
+            {[1, 2, 3].map((i) => (
+              <div key={i} className="w-8 h-1.5 bg-white/20 rounded-full" />
+            ))}
+          </div>
+        </div>
 
-        {/* Hover overlay with visit CTA */}
-        <div className="absolute inset-0 bg-brand-dark/0 group-hover/preview:bg-brand-dark/60 transition-all duration-300 flex items-center justify-center">
-          <span className="opacity-0 group-hover/preview:opacity-100 transition-opacity duration-300 flex items-center gap-2 bg-white text-brand-dark font-bold text-sm px-5 py-2.5 rounded-full shadow-xl">
-            Kunjungi Website <ExternalLink size={14} />
-          </span>
+        {/* Middle: content lines */}
+        <div className="space-y-2">
+          {project.mockupLines.map((line, i) => (
+            <div key={i} className="flex gap-1">
+              {line.split('').map((_, j) => (
+                <div
+                  key={j}
+                  className="h-1.5 bg-white/20 rounded-full flex-1"
+                  style={{ opacity: 0.3 + (j % 3) * 0.2 }}
+                />
+              ))}
+            </div>
+          ))}
+        </div>
+
+        {/* Bottom: CTA buttons */}
+        <div className="flex gap-2.5">
+          <div className="px-4 py-1.5 bg-white/25 backdrop-blur-sm rounded-lg">
+            <div className="w-14 h-1.5 bg-white/70 rounded-full" />
+          </div>
+          <div className="px-4 py-1.5 bg-white/10 rounded-lg border border-white/20">
+            <div className="w-10 h-1.5 bg-white/35 rounded-full" />
+          </div>
         </div>
       </div>
-    </a>
-  );
-};
+    </div>
+  </div>
+);
 
 const Portfolio = () => {
   return (
-    <section id="portfolio" className="py-32 bg-brand-dark relative overflow-hidden">
-      {/* Background subtle grid */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808008_1px,transparent_1px),linear-gradient(to_bottom,#80808008_1px,transparent_1px)] bg-[size:40px_40px]" />
-      {/* Ambient glow */}
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] bg-brand-primary/10 rounded-full blur-[100px] pointer-events-none" />
+    <section id="portfolio" className="py-28 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Section Header */}
+        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
           className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"
         >
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 text-brand-cyan font-mono text-sm mb-4">
-              <Sparkles size={16} />
-              REAL RESULTS
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-soft border border-blue-100 text-brand-blue text-sm font-semibold mb-5">
+              <Sparkles size={14} />
+              Karya Nyata
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              Karya yang Sudah{' '}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-brand-primary">
-                Terbukti Nyata
-              </span>
+            <h2 className="font-display text-4xl md:text-5xl font-extrabold text-brand-dark mb-4 tracking-tight">
+              Bukan Sekadar Mockup —{' '}
+              <span className="text-gradient">Live &amp; Berjalan</span>
             </h2>
-            <p className="text-gray-400 text-lg leading-relaxed">
-              Bukan sekadar mockup. Ini produk live yang sudah berjalan dan melayani pengguna nyata.
+            <p className="text-brand-slate text-lg leading-relaxed">
+              Produk-produk ini sudah melayani pengguna nyata. Klik untuk kunjungi langsung.
             </p>
           </div>
-          <div className="hidden md:flex items-center gap-2 text-gray-500 text-sm font-mono">
-            <Globe size={14} className="text-brand-cyan" />
-            <span>{projects.length} live projects</span>
+          <div className="hidden md:flex items-center gap-2 text-brand-muted text-sm font-mono bg-brand-soft px-4 py-2 rounded-full border border-brand-border">
+            <Globe size={13} className="text-brand-blue" />
+            {projects.length} live projects
           </div>
         </motion.div>
 
-        {/* Projects Grid — 2 columns */}
-        <div className="grid md:grid-cols-2 gap-8">
+        {/* Projects Grid */}
+        <div className="grid md:grid-cols-2 gap-7">
           {projects.map((project, index) => (
             <motion.div
               key={project.url}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: index * 0.12, duration: 0.6 }}
-              className="group relative rounded-3xl bg-brand-navy/40 border border-white/5 overflow-hidden hover:border-white/15 transition-all duration-500"
+              transition={{ delay: index * 0.1, duration: 0.55 }}
+              className="group/card bg-white rounded-3xl border border-brand-border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden"
             >
-              {/* Hover gradient bg */}
-              <div
-                className={`absolute inset-0 bg-gradient-to-br ${project.accentColor} opacity-0 group-hover:opacity-100 transition-opacity duration-500`}
-              />
+              {/* Mockup Preview + hover overlay */}
+              <div className="relative overflow-hidden">
+                <ProjectMockup project={project} />
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="absolute inset-0 bg-brand-dark/0 group-hover/card:bg-brand-dark/45 transition-all duration-300 flex items-center justify-center"
+                  aria-label={`Buka ${project.title}`}
+                >
+                  <span className="opacity-0 group-hover/card:opacity-100 transition-all duration-300 scale-90 group-hover/card:scale-100 flex items-center gap-2 bg-white text-brand-dark font-bold text-sm px-6 py-3 rounded-full shadow-xl">
+                    Kunjungi Langsung <ExternalLink size={14} />
+                  </span>
+                </a>
+              </div>
 
-              <div className="relative z-10 p-6 flex flex-col gap-5">
-                {/* Site Preview */}
-                <SitePreview
-                  url={project.url}
-                  title={project.title}
-                  previewBg={project.previewBg}
-                />
-
-                {/* Project Info */}
-                <div className="flex flex-col gap-3">
-                  <div className="flex items-start justify-between gap-3">
-                    <div>
-                      <span
-                        className={`text-xs font-mono font-semibold ${project.tagColor} uppercase tracking-widest`}
-                      >
-                        {project.tag}
-                      </span>
-                      <h3 className="text-xl font-bold text-white mt-1 group-hover:text-brand-cyan transition-colors">
-                        {project.title}
-                      </h3>
-                    </div>
-                    <a
-                      href={project.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="flex-shrink-0 w-9 h-9 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 hover:text-white hover:bg-white/10 hover:border-white/30 transition-all"
-                      aria-label={`Open ${project.title}`}
+              {/* Card info */}
+              <div className="p-6">
+                <div className="flex items-start justify-between gap-3 mb-3">
+                  <div>
+                    <span
+                      className="text-xs font-mono font-bold uppercase tracking-widest"
+                      style={{ color: project.accent }}
                     >
-                      <ExternalLink size={15} />
-                    </a>
+                      {project.tag}
+                    </span>
+                    <h3 className="font-display font-bold text-xl text-brand-dark mt-1 group-hover/card:text-brand-blue transition-colors">
+                      {project.title}
+                    </h3>
                   </div>
+                  <a
+                    href={project.url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex-shrink-0 w-9 h-9 rounded-xl border border-brand-border flex items-center justify-center text-brand-muted hover:text-brand-blue hover:border-blue-200 hover:bg-brand-soft transition-all"
+                    aria-label={`Open ${project.title}`}
+                  >
+                    <ExternalLink size={14} />
+                  </a>
+                </div>
 
-                  <p className="text-gray-400 text-sm leading-relaxed">
-                    {project.description}
-                  </p>
+                <p className="text-brand-slate text-sm leading-relaxed mb-4">{project.description}</p>
 
-                  {/* Tech Stack Pills */}
-                  <div className="flex flex-wrap gap-2 mt-1">
-                    {project.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-2.5 py-1 rounded-lg bg-white/5 border border-white/5 text-gray-400 text-xs font-mono group-hover:border-white/10 transition-colors"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+                {/* Tech pills */}
+                <div className="flex flex-wrap gap-2">
+                  {project.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="px-2.5 py-1 rounded-lg text-xs font-medium font-mono border"
+                      style={{
+                        backgroundColor: project.accentLight,
+                        color: project.accent,
+                        borderColor: `${project.accent}28`,
+                      }}
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
               </div>
             </motion.div>

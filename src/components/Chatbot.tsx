@@ -6,7 +6,9 @@ import ReactMarkdown from 'react-markdown';
 
 const Chatbot = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [messages, setMessages] = useState([{ role: 'ai', content: 'Halo! Ada yang bisa saya bantu tentang layanan cobamulai?' }]);
+  const [messages, setMessages] = useState([
+    { role: 'ai', content: 'Halo! Saya asisten Cobamulai 👋 Ada yang bisa saya bantu tentang layanan kami?' },
+  ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -19,111 +21,101 @@ const Chatbot = () => {
 
   const handleSend = async () => {
     if (!input.trim()) return;
-
     const userMsg = { role: 'user', content: input };
-    setMessages(prev => [...prev, userMsg]);
+    setMessages((prev) => [...prev, userMsg]);
     setInput('');
     setIsLoading(true);
-
     try {
       const aiRes = await getAIResponse(input);
-      setMessages(prev => [...prev, { role: 'ai', content: aiRes }]);
+      setMessages((prev) => [...prev, { role: 'ai', content: aiRes }]);
     } catch (error) {
-      console.error("Error sending message:", error);
+      console.error('Error sending message:', error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-   <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
+    <div className="fixed bottom-6 right-6 z-[60] flex flex-col items-end">
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: 20, scale: 0.95 }}
+            initial={{ opacity: 0, y: 16, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 20, scale: 0.95 }}
-            className="mb-4 w-[350px] sm:w-[400px] h-[500px] bg-brand-dark/80 backdrop-blur-2xl border border-white/10 rounded-3xl shadow-2xl flex flex-col overflow-hidden"
+            exit={{ opacity: 0, y: 16, scale: 0.95 }}
+            className="mb-4 w-[340px] sm:w-[380px] h-[500px] bg-white border border-brand-border rounded-3xl shadow-[0_20px_60px_rgba(0,0,0,0.15)] flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="p-4 bg-gradient-to-r from-brand-primary/20 to-brand-cyan/20 border-b border-white/10 flex justify-between items-center">
+            <div className="p-4 bg-brand-blue flex justify-between items-center">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-brand-cyan/20 flex items-center justify-center">
-                  <Bot size={20} className="text-brand-cyan" />
+                <div className="w-9 h-9 rounded-xl bg-white/20 flex items-center justify-center">
+                  <Bot size={18} className="text-white" />
                 </div>
                 <div>
-                  <h3 className="text-white font-bold text-sm">cobamul-ai</h3>
-                  <p className="text-[10px] text-brand-cyan flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Online
-                  </p>
+                  <p className="font-semibold text-white text-sm">Cobamulai AI</p>
+                  <div className="flex items-center gap-1">
+                    <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+                    <p className="text-blue-100 text-xs">Online sekarang</p>
+                  </div>
                 </div>
               </div>
+              <button
+                onClick={() => setIsOpen(false)}
+                className="w-8 h-8 rounded-xl bg-white/15 flex items-center justify-center text-white hover:bg-white/25 transition-colors"
+              >
+                <X size={16} />
+              </button>
             </div>
 
             {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
+            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-3 bg-slate-50">
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                  <div className={`max-w-[85%] p-3 rounded-2xl text-sm ${
-                    msg.role === 'user' 
-                      ? 'bg-brand-cyan text-brand-dark font-medium rounded-tr-none' 
-                      : 'bg-white/5 text-gray-200 border border-white/10 rounded-tl-none'
-                  }`}>
-                    {msg.role === 'user' ? (
-                      msg.content
-                    ) : (
-                      /* Bungkus dengan div untuk styling Tailwind, hapus className dari ReactMarkdown */
-                      <div className="prose prose-invert prose-sm max-w-none text-gray-200 leading-relaxed">
-                        <ReactMarkdown 
-                          components={{
-                            p: ({ node, ...props }) => <p className="mb-2 last:mb-0" {...props} />,
-                            ul: ({ node, ...props }) => <ul className="list-disc ml-4 mb-2" {...props} />,
-                            ol: ({ node, ...props }) => <ol className="list-decimal ml-4 mb-2" {...props} />,
-                            li: ({ node, ...props }) => <li className="mb-1" {...props} />,
-                            strong: ({ node, ...props }) => <strong className="text-brand-cyan font-bold" {...props} />,
-                            a: ({ node, ...props }) => (
-                              <a 
-                                className="text-brand-cyan underline hover:opacity-80 transition-opacity" 
-                                target="_blank" 
-                                rel="noopener noreferrer" 
-                                {...props} 
-                              />
-                            ),
-                          }}
-                        >
-                          {msg.content}
-                        </ReactMarkdown>
-                      </div>
-                    )}
+                  {msg.role === 'ai' && (
+                    <div className="w-7 h-7 rounded-xl bg-brand-blue flex items-center justify-center mr-2 flex-shrink-0 mt-0.5">
+                      <Bot size={13} className="text-white" />
+                    </div>
+                  )}
+                  <div
+                    className={`max-w-[80%] px-4 py-3 rounded-2xl text-sm leading-relaxed ${
+                      msg.role === 'user'
+                        ? 'bg-brand-blue text-white rounded-br-sm'
+                        : 'bg-white text-brand-dark border border-brand-border rounded-bl-sm shadow-card'
+                    }`}
+                  >
+                    <ReactMarkdown>{msg.content}</ReactMarkdown>
                   </div>
                 </div>
               ))}
               {isLoading && (
-                <div className="flex justify-start">
-                  <div className="bg-white/5 p-3 rounded-2xl rounded-tl-none border border-white/10">
-                    <Loader2 size={16} className="animate-spin text-brand-cyan" />
+                <div className="flex items-center gap-2">
+                  <div className="w-7 h-7 rounded-xl bg-brand-blue flex items-center justify-center flex-shrink-0">
+                    <Bot size={13} className="text-white" />
+                  </div>
+                  <div className="bg-white border border-brand-border px-4 py-3 rounded-2xl rounded-bl-sm shadow-card">
+                    <Loader2 size={14} className="animate-spin text-brand-blue" />
                   </div>
                 </div>
               )}
             </div>
 
             {/* Input */}
-            <div className="p-4 bg-white/5 border-t border-white/10">
-              <div className="relative">
+            <div className="p-4 border-t border-brand-border bg-white">
+              <div className="flex gap-2 items-center">
                 <input
                   type="text"
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Tanya sesuatu..."
-                  className="w-full bg-brand-dark/50 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white focus:outline-none focus:border-brand-cyan/50 transition-all"
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ketik pertanyaan Anda..."
+                  className="flex-1 text-sm border border-brand-border rounded-xl px-4 py-2.5 focus:outline-none focus:border-brand-blue focus:ring-2 focus:ring-blue-100 text-brand-dark placeholder:text-brand-muted bg-slate-50 transition-all"
                 />
-                <button 
+                <button
                   onClick={handleSend}
-                  disabled={isLoading}
-                  className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 bg-brand-cyan rounded-full flex items-center justify-center text-brand-dark hover:scale-110 active:scale-95 disabled:opacity-50 disabled:scale-100 transition-all"
+                  disabled={!input.trim()}
+                  className="w-10 h-10 rounded-xl bg-brand-blue text-white flex items-center justify-center hover:bg-blue-700 disabled:opacity-40 disabled:cursor-not-allowed transition-all"
                 >
-                  <Send size={14} />
+                  <Send size={15} />
                 </button>
               </div>
             </div>
@@ -136,26 +128,16 @@ const Chatbot = () => {
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="w-16 h-16 bg-gradient-to-tr from-brand-primary to-brand-cyan rounded-full flex items-center justify-center shadow-lg shadow-brand-cyan/20 text-white relative group"
+        className="w-14 h-14 rounded-2xl bg-brand-blue text-white flex items-center justify-center shadow-blue-glow hover:bg-blue-700 transition-all"
       >
         <AnimatePresence mode="wait">
           {isOpen ? (
-            <motion.div
-              key="x"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-            >
-              <X />
+            <motion.div key="x" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}>
+              <X size={22} />
             </motion.div>
           ) : (
-            <motion.div
-              key="msg"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-            >
-              <MessageSquare />
+            <motion.div key="chat" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}>
+              <MessageSquare size={22} />
             </motion.div>
           )}
         </AnimatePresence>

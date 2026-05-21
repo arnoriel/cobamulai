@@ -7,19 +7,72 @@ html {
 }
 
 body {
-  background-color: #020617; /* Brand Dark */
-  color: #ffffff;
+  background-color: #F8FBFF;
+  color: #0F172A;
   overflow-x: hidden;
 }
 
-/* Custom Scrollbar */
+/* ── Custom Scrollbar ─────────────────────────── */
 ::-webkit-scrollbar {
-  width: 10px;
+  width: 8px;
 }
 ::-webkit-scrollbar-track {
-  background: #0f172a;
+  background: #f1f5f9;
 }
 ::-webkit-scrollbar-thumb {
-  background: #3b82f6;
-  border-radius: 5px;
+  background: #2563eb;
+  border-radius: 4px;
+}
+
+/* ── Hero Static Gradient ─────────────────────── */
+.hero-gradient {
+  background: #2563eb;
+}
+
+/* ── Dot Grid Pattern ─────────────────────────── */
+.dot-grid {
+  background-image: radial-gradient(
+    circle,
+    rgba(0, 0, 0, 0.06) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+.dot-grid-white {
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.12) 1px,
+    transparent 1px
+  );
+  background-size: 28px 28px;
+}
+
+/* ── Line Grid Pattern ────────────────────────── */
+.line-grid {
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+}
+
+/* ── Section Blue Background ──────────────────── */
+.section-blue {
+  background-color: #EFF6FF;
+}
+
+/* ── Glass Card ───────────────────────────────── */
+.glass-card {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* ── Gradient Text ────────────────────────────── */
+.text-gradient {
+  background: linear-gradient(135deg, #2563eb, #0ea5e9);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }

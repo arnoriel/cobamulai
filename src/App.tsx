@@ -4,445 +4,577 @@ import {
   Bot,
   Code2,
   Rocket,
-  CheckCircle2,
   ArrowRight,
   Menu,
   X,
-  Zap,
   Globe,
-  ShieldCheck,
   Sparkles,
   Instagram,
-  Phone
+  Phone,
+  CheckCircle,
+  Briefcase,
+  TrendingUp,
+  Star,
+  Mail,
 } from 'lucide-react';
-// Pastikan file supabaseClient.js sudah dibuat di folder src
 import { supabase } from './supabaseClient';
 import Process from './components/Process';
 import Chatbot from './components/Chatbot';
 import About from './components/About';
 import Portfolio from './components/Portofolio';
-import Packages from './components/Packages';
+import Package from './components/Packages';
 
-// --- COMPONENTS ---
-
-// 1. Navbar Component (Glassmorphism Updated)
+// ─── NAVBAR (Squircle Floating Dock) ─────────────────────────────────────────
 const Navbar = ({ waLink }: { waLink: string }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const [scrolled, setScrolled] = useState(false);
 
-  useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+  const links = [
+    { label: 'Portfolio', href: '#portfolio' },
+    { label: 'Tentang', href: '#about' },
+    { label: 'Cara Kerja', href: '#process' },
+    { label: 'Paket Harga', href: '#packages' },
+    { label: 'Karir', href: '/careers' },
+  ];
 
   return (
-    <nav className={`fixed w-full z-50 transition-all duration-500 ${scrolled ? 'bg-brand-dark/70 backdrop-blur-xl border-b border-white/10 shadow-[0_0_30px_rgba(0,0,0,0.5)]' : 'bg-transparent border-b border-transparent'}`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <div className="flex-shrink-0 flex items-center gap-2 font-bold text-2xl tracking-tighter text-white cursor-pointer">
-            <span>cobamul<span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-blue-500">ai</span>.</span>
-          </div>
+    <div className="fixed top-5 inset-x-0 z-50 flex flex-col items-center px-4 pointer-events-none">
+      {/* ── Desktop: Squircle Dock ── */}
+      <div className="hidden lg:flex pointer-events-auto items-center gap-0.5 bg-neutral-900 rounded-[20px] px-2 py-2 shadow-2xl border border-white/[0.08]">
+        {links.map((item) => (
+          <a
+            key={item.label}
+            href={item.href}
+            className="px-4 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-[12px] transition-all duration-200 whitespace-nowrap"
+          >
+            {item.label}
+          </a>
+        ))}
+        <div className="w-px h-5 bg-white/15 mx-2 flex-shrink-0" />
+        <a
+          href={waLink}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="ml-1 px-5 py-2.5 bg-white text-neutral-900 text-sm font-bold rounded-[12px] hover:bg-white/90 transition-all shadow-sm whitespace-nowrap"
+        >
+          Konsultasi Gratis
+        </a>
+      </div>
 
-          {/* Desktop Menu */}
-          <div className="hidden lg:block">
-            <div className="ml-6 flex items-center space-x-5">
-              {['Home', 'Services', 'Portfolio', 'Process', 'About', 'Packages'].map((item) => (
-                <a key={item} href={`#${item.toLowerCase()}`} className="relative text-sm font-medium text-gray-300 hover:text-white transition-colors group">
-                  {item}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-brand-cyan transition-all group-hover:w-full" />
+      {/* ── Mobile: Squircle Hamburger Button ── */}
+      <div className="lg:hidden w-full flex justify-end pointer-events-auto">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-12 h-12 bg-black rounded-[16px] flex items-center justify-center text-white shadow-2xl border border-white/10 transition-transform active:scale-95"
+          aria-label="Toggle menu"
+        >
+          {isOpen ? <X size={20} /> : <Menu size={20} />}
+        </button>
+      </div>
+
+      {/* ── Mobile: Dropdown Menu ── */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.96 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.96 }}
+            transition={{ duration: 0.18 }}
+            className="lg:hidden pointer-events-auto mt-2 w-full max-w-xs bg-black rounded-[20px] p-2 shadow-2xl border border-white/10"
+          >
+            <div className="space-y-0.5">
+              {links.map((item) => (
+                <a
+                  key={item.label}
+                  href={item.href}
+                  onClick={() => setIsOpen(false)}
+                  className="block px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-[12px] text-sm font-medium transition-all"
+                >
+                  {item.label}
                 </a>
               ))}
-              
+            </div>
+            <div className="mt-2 pt-2 border-t border-white/10">
               <a
                 href={waLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="group relative px-6 py-2.5 rounded-full bg-white/5 text-white font-medium border border-white/10 hover:border-brand-cyan/50 transition-all overflow-hidden"
+                onClick={() => setIsOpen(false)}
+                className="block px-4 py-3 bg-white text-black font-bold text-sm rounded-[12px] text-center hover:bg-white/90 transition-all"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/20 to-brand-cyan/20 opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="relative flex items-center gap-2">
-                  Mulai Proyek <Zap size={16} className="text-brand-cyan fill-brand-cyan" />
-                </span>
-              </a>
-            </div>
-          </div>
-
-          {/* Mobile Menu Button */}
-          <div className="lg:hidden">
-            <button onClick={() => setIsOpen(!isOpen)} className="text-white p-2">
-              {isOpen ? <X size={24} /> : <Menu size={24} />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Mobile Menu Dropdown */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-brand-dark/95 backdrop-blur-xl border-b border-white/10 overflow-hidden"
-          >
-            <div className="px-4 pt-2 pb-6 space-y-2">
-              {['Home', 'Services', 'Portfolio', 'Process', 'About', 'Packages'].map((item) => (
-                <a key={item} onClick={() => setIsOpen(false)} href={`#${item.toLowerCase()}`} className="block px-3 py-3 rounded-lg hover:bg-white/5 text-base font-medium text-gray-300 hover:text-white transition-colors">
-                  {item}
-                </a>
-              ))}
-              <a 
-                 href={waLink}
-                 target="_blank"
-                 rel="noopener noreferrer"
-                 className="block mt-4 text-center py-3 rounded-lg bg-gradient-to-r from-brand-primary to-brand-cyan text-white font-bold"
-              >
-                Mulai Sekarang
+                Konsultasi Gratis
               </a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
-    </nav>
+    </div>
   );
 };
 
-// 2. Hero Component (Mobile Responsive Fix)
+// ─── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = ({ waLink }: { waLink: string }) => {
   const { scrollY } = useScroll();
-  const y1 = useTransform(scrollY, [0, 500], [0, 100]);
-  const opacity = useTransform(scrollY, [0, 300], [1, 0]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
 
-  return (
-    <section id="home" className="relative min-h-screen flex items-center justify-center overflow-hidden pt-20">
-      {/* Dynamic Grid Background */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-      <div className="absolute inset-0 bg-brand-dark [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,transparent_70%,#000_100%)]"></div>
-      
-      {/* Ambient Glows */}
-      <div className="absolute top-[-10%] left-[20%] w-[500px] h-[500px] bg-brand-primary/20 rounded-full blur-[120px] animate-pulse" />
-      <div className="absolute bottom-[-10%] right-[20%] w-[500px] h-[500px] bg-brand-cyan/10 rounded-full blur-[120px]" />
-
-      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-        >
-          {/* Badge */}
-          <motion.div 
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="inline-flex items-center gap-2 py-1.5 px-4 rounded-full bg-white/5 border border-white/10 text-brand-cyan text-sm font-medium mb-6 md:mb-8 backdrop-blur-md shadow-[0_0_20px_rgba(6,182,212,0.15)] hover:shadow-[0_0_30px_rgba(6,182,212,0.3)] transition-all cursor-default"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-cyan opacity-75"></span>
-              <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-cyan"></span>
-            </span>
-            Solusi Digital Next-Gen
-          </motion.div>
-
-          {/* Heading - FIXED: Responsive sizes & wrap handling */}
-          <h1 className="text-4xl sm:text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tight text-white mb-8 leading-tight">
-            Transformasi Bisnis <br className="hidden md:block" />
-            {/* Removed whitespace-nowrap to prevent clipping on mobile */}
-            <span className="relative inline-block mt-2 md:mt-0">
-              <span className="absolute -inset-1 bg-gradient-to-r from-brand-primary to-brand-cyan blur-2xl opacity-30"></span>
-              <span className="relative text-transparent bg-clip-text bg-gradient-to-r from-white via-brand-cyan to-brand-primary animate-gradient-x">
-                Era Artificial Intelligence
-              </span>
-            </span>
-          </h1>
-
-          <p className="mt-4 md:mt-6 text-base md:text-xl text-gray-400 max-w-3xl mx-auto mb-10 md:mb-12 leading-relaxed px-2">
-            Hadirkan pengalaman digital kelas dunia. Kami menggabungkan <span className="text-white font-semibold">Desain Futuristik</span> dan <span className="text-white font-semibold">Kecerdasan Buatan</span> untuk mempercepat pertumbuhan bisnis Anda.
-          </p>
-          
-          {/* Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 md:gap-5 justify-center items-center px-4">
-            <a
-              href={waLink}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-full sm:w-auto group relative px-8 py-4 bg-white text-brand-dark rounded-full font-bold text-lg transition-all hover:scale-105 hover:shadow-[0_0_40px_rgba(255,255,255,0.3)] overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center justify-center gap-2">
-                Konsultasi Gratis <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
-              </span>
-            </a>
-            
-            <a href="#services" className="w-full sm:w-auto px-8 py-4 rounded-full font-medium text-white border border-white/10 hover:bg-white/5 transition-all flex items-center justify-center gap-2 hover:border-white/30">
-               Jelajahi Layanan
-            </a>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* Floating 3D Elements */}
-      <motion.div style={{ y: y1, opacity }} className="absolute top-1/4 left-[5%] opacity-30 hidden xl:block pointer-events-none">
-        <div className="relative p-4 bg-brand-navy/50 backdrop-blur-md rounded-2xl border border-white/10 rotate-[-12deg]">
-             <Code2 size={48} className="text-brand-cyan" />
-        </div>
-      </motion.div>
-      <motion.div style={{ y: y1, opacity }} className="absolute bottom-1/4 right-[5%] opacity-30 hidden xl:block pointer-events-none">
-        <div className="relative p-4 bg-brand-navy/50 backdrop-blur-md rounded-2xl border border-white/10 rotate-[12deg]">
-             <Bot size={48} className="text-brand-primary" />
-        </div>
-      </motion.div>
-    </section>
-  );
-};
-
-// 3. Services Component (Bento Grid Style)
-const Services = () => {
-  const services = [
-    {
-      title: "AI & Automation",
-      desc: "Chatbot cerdas, prediksi data, dan sistem otomatisasi yang bekerja 24/7 untuk Anda.",
-      icon: <Bot size={32} />,
-      color: "from-purple-500 to-indigo-500",
-      colSpan: "md:col-span-2"
-    },
-    {
-      title: "SaaS Development",
-      desc: "Bangun produk digital yang scalable dan aman.",
-      icon: <Rocket size={32} />,
-      color: "from-pink-500 to-rose-500",
-      colSpan: "md:col-span-1"
-    },
-    {
-      title: "Premium Web Design",
-      desc: "UI/UX futuristik dengan performa ultra-cepat dan SEO optimized.",
-      icon: <Globe size={32} />,
-      color: "from-cyan-400 to-blue-500",
-      colSpan: "md:col-span-3"
-    },
+  const floatingCards = [
+    { icon: <Bot size={22} className="text-white" />, label: 'AI Chatbot', sub: 'Live in 60s', delay: 0 },
+    { icon: <Code2 size={22} className="text-white" />, label: 'Web SaaS', sub: 'Scalable', delay: 0.15 },
+    { icon: <TrendingUp size={22} className="text-white" />, label: 'Konversi+', sub: '+240%', delay: 0.3 },
   ];
 
   return (
-    <section id="services" className="py-32 bg-brand-dark relative">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6">
-          <div className="max-w-2xl">
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-              Ekosistem Layanan <span className="text-brand-cyan">Terintegrasi</span>
-            </h2>
-            <p className="text-gray-400 text-lg">
-              Solusi end-to-end untuk kebutuhan teknologi modern Anda.
-            </p>
-          </div>
-          <div className="hidden md:block w-32 h-1 bg-gradient-to-r from-brand-cyan to-transparent rounded-full mb-4"></div>
-        </div>
+    <section
+      id="home"
+      className="hero-gradient relative min-h-screen flex items-center overflow-hidden"
+      style={{ borderBottomLeftRadius: '4rem', borderBottomRightRadius: '4rem' }}
+    >
+      {/* White dot grid overlay */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-50"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)',
+          backgroundSize: '32px 32px',
+        }}
+      />
 
-        <div className="grid md:grid-cols-3 gap-6">
-          {services.map((service, index) => (
+      <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-36 pb-32 z-10">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
+          {/* ── Left: Copy ── */}
+          <motion.div style={{ opacity }} className="max-w-xl">
+            {/* Badge */}
             <motion.div
-              key={index}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              transition={{ delay: index * 0.1 }}
-              viewport={{ once: true }}
-              className={`${service.colSpan} group relative p-8 rounded-3xl bg-brand-navy/40 border border-white/5 overflow-hidden hover:border-white/20 transition-all duration-300`}
+              initial={{ opacity: 0, y: 16 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2.5 px-4 py-2 rounded-full bg-white/15 border border-white/25 text-white text-sm font-semibold mb-8"
             >
-              {/* Hover Gradient Background */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${service.color} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
-              
-              <div className="relative z-10 flex flex-col h-full justify-between">
-                <div className="mb-8">
-                  <div className={`w-14 h-14 rounded-2xl bg-gradient-to-br ${service.color} p-[1px] mb-6`}>
-                    <div className="w-full h-full bg-brand-dark rounded-2xl flex items-center justify-center text-white group-hover:text-brand-cyan transition-colors">
-                      {service.icon}
-                    </div>
-                  </div>
-                  <h3 className="text-2xl font-bold text-white mb-3 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:to-gray-400 transition-all">
-                    {service.title}
-                  </h3>
-                  <p className="text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                    {service.desc}
-                  </p>
+              Partner AI & Digital Indonesia
+            </motion.div>
+
+            {/* Heading */}
+            <motion.h1
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.1 }}
+              className="font-display text-5xl sm:text-6xl lg:text-[64px] font-extrabold text-white leading-[1.08] tracking-tight mb-7"
+            >
+              Bisnis Anda,
+              <br />
+              <span className="text-sky-300">Diperkuat AI.</span>
+            </motion.h1>
+
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              className="text-white/80 text-lg leading-relaxed mb-10"
+            >
+              Kami membangun <strong className="text-white">web premium, SaaS, dan otomasi AI</strong> yang langsung
+              menghasilkan — bukan sekadar website cantik yang tidak berkonversi.
+            </motion.p>
+
+            {/* CTA Buttons */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.3 }}
+              className="flex flex-col sm:flex-row gap-4"
+            >
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-blue font-bold rounded-2xl hover:bg-white/90 transition-all shadow-xl hover:shadow-2xl hover:scale-[1.02]"
+              >
+                Konsultasi Gratis
+                <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="#portfolio"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/15 text-white font-semibold rounded-2xl border border-white/25 hover:bg-white/25 transition-all backdrop-blur-sm"
+              >
+                Lihat Portfolio
+              </a>
+            </motion.div>
+          </motion.div>
+
+          {/* ── Right: Floating Cards ── */}
+          <motion.div
+            initial={{ opacity: 0, x: 40 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="relative hidden lg:flex justify-center items-center h-[480px]"
+          >
+            {/* Glow orb */}
+            <div className="absolute w-64 h-64 bg-white/8 rounded-full blur-[60px]" />
+
+            {/* Floating feature cards */}
+            {floatingCards.map((card, i) => (
+              <motion.div
+                key={i}
+                animate={{ y: [0, -10, 0] }}
+                transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: card.delay }}
+                className={`absolute rounded-2xl p-5 flex items-center gap-3 min-w-[185px] bg-white/15 backdrop-blur-md border border-white/20 shadow-xl ${
+                  i === 0 ? 'top-8 left-4' : i === 1 ? 'top-1/2 -translate-y-1/2 right-0' : 'bottom-12 left-12'
+                }`}
+                style={{ zIndex: 10 + i }}
+              >
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
+                  {card.icon}
                 </div>
+                <div>
+                  <p className="font-semibold text-white text-sm">{card.label}</p>
+                  <p className="text-white/60 text-xs">{card.sub}</p>
+                </div>
+              </motion.div>
+            ))}
+
+            {/* Central card */}
+            <motion.div
+              animate={{ scale: [1, 1.02, 1] }}
+              transition={{ duration: 4, repeat: Infinity }}
+              className="rounded-3xl p-8 w-64 text-center z-20 bg-white/15 backdrop-blur-md border border-white/25 shadow-2xl"
+            >
+              <div className="w-16 h-16 rounded-2xl bg-white/25 flex items-center justify-center mx-auto mb-4">
+                <Sparkles size={28} className="text-white" />
+              </div>
+              <p className="font-display font-bold text-white text-xl mb-1">cobamulai.</p>
+              <p className="text-white/60 text-sm">AI & Web Studio</p>
+              <div className="mt-4 flex items-center justify-center gap-1.5">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-xs text-white/70 font-medium">Tersedia untuk proyek baru</span>
               </div>
             </motion.div>
-          ))}
+          </motion.div>
         </div>
       </div>
     </section>
   );
 };
 
-// 4. Features (HUD / Dashboard Aesthetic)
-const Features = () => {
+// ─── PROBLEM & SOLUTION ───────────────────────────────────────────────────────
+// Note: negative margin-top + border-radius creates the 3D "floating platform" illusion
+const ProblemSolution = () => {
+  const problems = [
+    { text: 'Website tidak menghasilkan leads atau penjualan nyata' },
+    { text: 'Tim tidak punya waktu untuk jawab pertanyaan klien 24/7' },
+    { text: 'Proses bisnis manual yang membuang waktu dan biaya' },
+    { text: 'Tidak tahu cara integrasikan AI ke bisnis yang sudah berjalan' },
+    { text: 'Vendor web yang hanya bisa desain, tidak bisa strategi' },
+  ];
+
+  const solutions = [
+    { text: 'Website yang dioptimasi konversi — setiap pixel punya tujuan' },
+    { text: 'AI Chatbot custom yang merespons klien kapan saja, instan' },
+    { text: 'Otomasi workflow: dari invoice sampai laporan, berjalan sendiri' },
+    { text: 'Konsultasi roadmap AI yang praktis dan langsung implementable' },
+    { text: 'Tim full-stack: strategi, desain, kode, dan data dalam satu tempat' },
+  ];
+
   return (
-    <section className="py-32 relative overflow-hidden bg-brand-dark">
-        {/* Background Decorative */}
-        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1/2 h-full bg-gradient-to-l from-brand-primary/5 to-transparent pointer-events-none"></div>
+    <section
+      className="relative z-10 section-blue overflow-hidden"
+      style={{
+        marginTop: '-5rem',
+        borderTopLeftRadius: '4rem',
+        borderTopRightRadius: '4rem',
+        paddingTop: '8rem',
+        paddingBottom: '7rem',
+        boxShadow: '0 -16px 60px rgba(0,0,0,0.18)',
+      }}
+    >
+      {/* Top border line */}
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
+      <div className="absolute bottom-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-300/50 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+        {/* Header */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="text-center mb-16"
+        >
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-border text-brand-blue text-sm font-semibold mb-6 shadow-card">
+            Masalah & Solusi
+          </div>
+          <h2 className="font-display text-4xl md:text-5xl font-extrabold text-brand-dark mb-5 tracking-tight">
+            Kami Tahu Apa yang
+            <br />
+            <span className="text-gradient">Bisnismu Butuhkan</span>
+          </h2>
+          <p className="text-brand-slate text-lg max-w-2xl mx-auto">
+            Banyak bisnis Indonesia terjebak di titik yang sama. Cobamulai hadir dengan solusi nyata, bukan janji.
+          </p>
+        </motion.div>
+
+        {/* Dual Cards Grid */}
+        <div className="grid md:grid-cols-2 gap-6">
+          {/* Problem Card */}
           <motion.div
-            initial={{ opacity: 0, x: -50 }}
+            initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+            className="bg-white rounded-3xl p-8 border border-brand-border shadow-card"
           >
-            <div className="inline-flex items-center gap-2 text-brand-cyan font-mono text-sm mb-6">
-                <Sparkles size={16} /> WHY CHOOSE US
+            <div className="flex items-center gap-3 mb-7">
+              <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
+                <X size={18} className="text-red-500" />
+              </div>
+              <div>
+                <p className="font-display font-bold text-brand-dark text-lg">Masalah Umum</p>
+                <p className="text-brand-muted text-sm">yang dihadapi bisnis Indonesia</p>
+              </div>
             </div>
-            <h2 className="text-4xl md:text-5xl font-bold text-white mb-8 leading-tight">
-              Teknologi yang <br/>
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-cyan to-white">
-                 Bekerja Untuk Anda
-              </span>
-            </h2>
-            <p className="text-gray-400 text-lg mb-10 leading-relaxed">
-              Kami tidak sekadar membuat sistem. Kami merancang arsitektur sistem yang aman, cepat, dan siap untuk scaling jutaan pengguna.
-            </p>
-            
-            <div className="space-y-6">
-              {[
-                { text: "Arsitektur Cloud-Native & Scalable", icon: <Globe size={20}/> },
-                { text: "Keamanan Data Enterprise Grade", icon: <ShieldCheck size={20}/> },
-                { text: "Integrasi AI & Machine Learning", icon: <Bot size={20}/> },
-                { text: "Support Premium 24/7", icon: <CheckCircle2 size={20}/> }
-              ].map((item, idx) => (
-                <div key={idx} className="flex items-center gap-4 group">
-                  <div className="flex-shrink-0 w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-brand-cyan border border-white/5 group-hover:border-brand-cyan/50 group-hover:bg-brand-cyan/10 transition-all">
-                    {item.icon}
+
+            <div className="space-y-4">
+              {problems.map((item, i) => (
+                <motion.div
+                  key={i}
+                  initial={{ opacity: 0, x: -10 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: i * 0.08 }}
+                  className="flex items-start gap-3 p-4 rounded-2xl bg-red-50/50 border border-red-100/80"
+                >
+                  <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <X size={10} className="text-red-500" />
                   </div>
-                  <span className="text-gray-300 font-medium group-hover:text-white transition-colors">{item.text}</span>
-                </div>
+                  <p className="text-sm text-slate-700 leading-relaxed">{item.text}</p>
+                </motion.div>
               ))}
             </div>
           </motion.div>
 
+          {/* Solution Card */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, x: 30 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            className="relative"
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="bg-gradient-to-br from-brand-blue to-blue-700 rounded-3xl p-8 border border-blue-500/20 shadow-blue-glow relative overflow-hidden"
           >
-             {/* Abstract HUD / Dashboard UI */}
-             <div className="relative z-10 bg-[#0A0A0B] border border-white/10 rounded-2xl p-1 shadow-2xl shadow-brand-primary/20 backdrop-blur-xl">
-                <div className="bg-brand-navy/50 rounded-xl p-6 border border-white/5 h-full">
-                    {/* Fake Browser Header */}
-                    <div className="flex items-center justify-between mb-8 border-b border-white/5 pb-4">
-                        <div className="flex gap-2">
-                            <div className="w-3 h-3 rounded-full bg-red-500/80" />
-                            <div className="w-3 h-3 rounded-full bg-yellow-500/80" />
-                            <div className="w-3 h-3 rounded-full bg-green-500/80" />
-                        </div>
-                        <div className="h-6 w-32 bg-white/5 rounded-md text-[10px] flex items-center justify-center text-gray-500 font-mono">
-                            dashboard.app
-                        </div>
-                    </div>
+            {/* Decorative circles */}
+            <div className="absolute top-[-30px] right-[-30px] w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
+            <div className="absolute bottom-[-20px] left-[-20px] w-32 h-32 rounded-full bg-white/5 pointer-events-none" />
 
-                    {/* Dashboard Content */}
-                    <div className="space-y-4 font-mono text-sm">
-                        <div className="flex justify-between items-center text-gray-400 mb-2">
-                            <span>Server Status</span>
-                            <span className="text-green-400">● Online</span>
-                        </div>
-                        <div className="h-32 bg-gradient-to-r from-brand-primary/20 to-brand-cyan/20 rounded-lg border border-brand-cyan/20 relative overflow-hidden">
-                             {/* Animated Wave */}
-                             <div className="absolute inset-0 opacity-30 flex items-center justify-center">
-                                <div className="w-full h-[1px] bg-brand-cyan shadow-[0_0_10px_#22d3ee]"></div>
-                             </div>
-                             <div className="p-4">
-                                <div className="text-2xl font-bold text-white">99.9%</div>
-                                <div className="text-xs text-brand-cyan">Uptime Guarantee</div>
-                             </div>
-                        </div>
-                        <div className="grid grid-cols-2 gap-4">
-                            <div className="p-4 bg-white/5 rounded-lg border border-white/5">
-                                <div className="text-gray-500 text-xs mb-1">Total Users</div>
-                                <div className="text-white font-bold text-lg">24.5K</div>
-                            </div>
-                            <div className="p-4 bg-white/5 rounded-lg border border-white/5">
-                                <div className="text-gray-500 text-xs mb-1">AI Requests</div>
-                                <div className="text-white font-bold text-lg">1.2M</div>
-                            </div>
-                        </div>
-                    </div>
+            <div className="relative z-10">
+              <div className="flex items-center gap-3 mb-7">
+                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
+                  <CheckCircle size={18} className="text-white" />
                 </div>
-             </div>
-             
-             {/* Glow Effects Behind */}
-             <div className="absolute -top-10 -right-10 w-64 h-64 bg-brand-primary/30 rounded-full blur-[80px]" />
-             <div className="absolute -bottom-10 -left-10 w-64 h-64 bg-brand-cyan/30 rounded-full blur-[80px]" />
+                <div>
+                  <p className="font-display font-bold text-white text-lg">Solusi Cobamulai</p>
+                  <p className="text-blue-200 text-sm">yang langsung berdampak</p>
+                </div>
+              </div>
+
+              <div className="space-y-4">
+                {solutions.map((item, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, x: 10 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.08 }}
+                    className="flex items-start gap-3 p-4 rounded-2xl bg-white/10 border border-white/15"
+                  >
+                    <div className="w-5 h-5 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0 mt-0.5">
+                      <CheckCircle size={10} className="text-white" />
+                    </div>
+                    <p className="text-sm text-blue-50 leading-relaxed">{item.text}</p>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </motion.div>
         </div>
+
+        {/* Stats bar */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.3 }}
+          className="mt-10 bg-white rounded-2xl border border-brand-border shadow-card p-6 flex flex-wrap gap-8 justify-around items-center"
+        >
+          {[
+            { value: '50+', label: 'Proyek Live', icon: <Rocket size={16} className="text-brand-blue" /> },
+            { value: '100%', label: 'Klien Puas', icon: <Star size={16} className="text-amber-500" /> },
+            { value: '4+', label: 'Tahun Pengalaman', icon: <Briefcase size={16} className="text-indigo-500" /> },
+            { value: '24', label: 'Model AI Dipakai', icon: <Bot size={16} className="text-emerald-500" /> },
+          ].map((stat, i) => (
+            <div key={i} className="text-center">
+              <div className="flex items-center justify-center gap-1 mb-1 text-brand-muted text-xs">{stat.icon} {stat.label}</div>
+              <p className="font-display font-extrabold text-3xl text-brand-dark">{stat.value}</p>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );
 };
 
-// 6. Footer (Minimalist Modern with Updated Socials)
-const Footer = ({ waLink }: { waLink: string }) => {
+// ─── CTA SECTION ──────────────────────────────────────────────────────────────
+const CTASection = ({ waLink }: { waLink: string }) => {
   return (
-    <footer className="bg-[#050505] pt-24 pb-12 border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid md:grid-cols-4 gap-12 mb-20">
-          <div className="col-span-1 md:col-span-2">
-            <h2 className="text-3xl font-bold text-white mb-6">cobamul<span className="text-brand-cyan">ai</span>.</h2>
-            <p className="text-gray-500 max-w-sm leading-relaxed mb-6">
-              Partner teknologi strategis untuk transformasi bisnis Anda. Kami membangun masa depan digital.
-            </p>
-            
-            <div className="flex gap-4">
-                {/* Instagram */}
-                <a 
-                   href="https://www.instagram.com/cobamulai?igsh=MW8wNXdwZHhueGtraQ=="
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 text-gray-400 transition-all cursor-pointer hover:bg-gradient-to-tr hover:from-purple-500 hover:to-orange-500 hover:text-white hover:border-transparent"
-                >
-                    <Instagram size={18} />
-                </a>
+    <section className="py-28 bg-white relative overflow-hidden">
+      <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[700px] h-[400px] bg-gradient-to-r from-blue-100/60 to-sky-100/60 rounded-full blur-[80px] pointer-events-none" />
 
-                {/* WhatsApp */}
-                <a 
-                   href={waLink}
-                   target="_blank"
-                   rel="noopener noreferrer"
-                   className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center border border-white/5 text-gray-400 transition-all cursor-pointer hover:bg-green-600 hover:text-white hover:border-transparent"
-                >
-                    <Phone size={18} />
-                </a>
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          className="bg-gradient-to-br from-brand-blue via-blue-600 to-indigo-600 rounded-[2.5rem] p-12 md:p-20 text-center relative overflow-hidden shadow-blue-glow"
+        >
+          {/* Decorative */}
+          <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none" />
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -translate-x-1/3 translate-y-1/3 pointer-events-none" />
+          <div className="absolute inset-0 line-grid opacity-20 pointer-events-none" />
+
+          <div className="relative z-10">
+            <motion.div
+              initial={{ scale: 0.9, opacity: 0 }}
+              whileInView={{ scale: 1, opacity: 1 }}
+              viewport={{ once: true }}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 text-blue-100 text-sm font-medium mb-8 border border-white/20"
+            >
+              Mulai dalam 48 jam
+            </motion.div>
+
+            <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
+              Siap Ubah Ide Jadi
+              <br />
+              Produk Digital Nyata?
+            </h2>
+
+            <p className="text-blue-100 text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed">
+              Jangan tunggu kompetitor mendahului. Satu sesi konsultasi gratis bisa mengubah arah bisnis Anda.
+            </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group inline-flex items-center justify-center gap-2 px-8 py-4 bg-white text-brand-blue rounded-2xl font-bold text-lg hover:bg-blue-50 transition-all hover:scale-[1.02] shadow-lg"
+              >
+                Hubungi via WhatsApp
+                <ArrowRight size={20} className="group-hover:translate-x-1 transition-transform" />
+              </a>
+              <a
+                href="mailto:cobamulai.ai@gmail.com"
+                className="inline-flex items-center justify-center gap-2 px-8 py-4 bg-white/15 text-white rounded-2xl font-semibold text-lg border border-white/25 hover:bg-white/25 transition-all"
+              >
+                <Mail size={18} />
+                Kirim Email
+              </a>
+            </div>
+
+            <p className="mt-8 text-blue-200/70 text-sm">
+              Respon dalam <strong className="text-white">{'< 2 jam'}</strong> di hari kerja · Konsultasi 100% gratis
+            </p>
+          </div>
+        </motion.div>
+      </div>
+    </section>
+  );
+};
+
+// ─── FOOTER ───────────────────────────────────────────────────────────────────
+const Footer = ({ waLink }: { waLink: string }) => {
+  const links = {
+    Layanan: ['AI & Automation', 'Web Development', 'SaaS Building', 'Cloud Architecture'],
+    Perusahaan: ['Portfolio', 'Tentang Kami', 'Cara Kerja', 'Paket Harga'],
+    Karir: ['Freelance Developer', 'Freelance Sales', 'Lihat Semua Lowongan'],
+  };
+
+  return (
+    <footer className="bg-brand-dark text-white pt-20 pb-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-5 gap-12 mb-16">
+          {/* Brand */}
+          <div className="md:col-span-2">
+            <h2 className="font-display font-extrabold text-2xl mb-4">
+              cobamul<span className="text-brand-cyan">ai</span>.
+            </h2>
+            <p className="text-slate-400 text-sm leading-relaxed mb-6 max-w-xs">
+              Studio teknologi Indonesia yang membangun web, SaaS, dan sistem AI untuk bisnis yang serius bertumbuh.
+            </p>
+            <div className="flex gap-3">
+              <a
+                href="https://www.instagram.com/cobamulai?igsh=MW8wNXdwZHhueGtraQ=="
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-gradient-to-tr hover:from-purple-500 hover:to-orange-400 hover:text-white hover:border-transparent transition-all"
+              >
+                <Instagram size={16} />
+              </a>
+              <a
+                href={waLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-emerald-600 hover:text-white hover:border-transparent transition-all"
+              >
+                <Phone size={16} />
+              </a>
+              <a
+                href="mailto:cobamulai.ai@gmail.com"
+                className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-slate-400 hover:bg-brand-blue hover:text-white hover:border-transparent transition-all"
+              >
+                <Mail size={16} />
+              </a>
             </div>
           </div>
-          
-          <div>
-            <h3 className="text-white font-semibold mb-6 tracking-wide">Layanan</h3>
-            <ul className="space-y-4 text-gray-500 text-sm">
-              <li><a href="#" className="hover:text-brand-cyan transition-colors">AI Solutions</a></li>
-              <li><a href="#" className="hover:text-brand-cyan transition-colors">Web Development</a></li>
-              <li><a href="#" className="hover:text-brand-cyan transition-colors">Cloud Architecture</a></li>
-              <li><a href="#" className="hover:text-brand-cyan transition-colors">Mobile Apps</a></li>
-            </ul>
-          </div>
-          
-          <div>
-            <h3 className="text-white font-semibold mb-6 tracking-wide">Kontak</h3>
-            <ul className="space-y-4 text-gray-500 text-sm">
-              <li className="flex items-start gap-3">
-                  <Globe size={16} className="mt-1 text-brand-cyan"/> 
-                  <span>Bandung, West Java<br/>Indonesia</span>
-              </li>
-              <li className="flex items-center gap-3">
-                  <Zap size={16} className="text-brand-cyan"/> 
-                  <span>cobamulai@gmail.com</span>
-              </li>
-            </ul>
+
+          {/* Links */}
+          {Object.entries(links).map(([title, items]) => (
+            <div key={title}>
+              <h3 className="text-white font-semibold text-sm mb-5 tracking-wide">{title}</h3>
+              <ul className="space-y-3">
+                {items.map((item) => (
+                  <li key={item}>
+                    <a
+                      href={title === 'Karir' ? '/careers' : '#'}
+                      className="text-slate-500 text-sm hover:text-brand-cyan transition-colors"
+                    >
+                      {item}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+
+        {/* Contact info */}
+        <div className="border-t border-white/5 pt-8 mb-8">
+          <div className="flex flex-wrap gap-6 text-slate-500 text-sm">
+            <span className="flex items-center gap-2">
+              <Globe size={14} className="text-brand-cyan" />
+              Bandung, West Java, Indonesia
+            </span>
+            <a href="mailto:cobamulai.ai@gmail.com" className="flex items-center gap-2 hover:text-brand-cyan transition-colors">
+              <Mail size={14} className="text-brand-cyan" />
+              cobamulai.ai@gmail.com
+            </a>
+            <a href="https://wa.me/6288272264011" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:text-brand-cyan transition-colors">
+              <Phone size={14} className="text-brand-cyan" />
+              +62 882 7226 4011
+            </a>
           </div>
         </div>
-        
-        <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-4 text-gray-600 text-sm">
-          <div>© {new Date().getFullYear()} Cobamulai Technologies.</div>
+
+        {/* Bottom */}
+        <div className="border-t border-white/5 pt-8 flex flex-col md:flex-row justify-between items-center gap-4 text-slate-600 text-xs">
+          <p>© {new Date().getFullYear()} Cobamulai Technologies. All rights reserved.</p>
           <div className="flex gap-6">
-              <a href="#" className="hover:text-white transition-colors">Privacy</a>
-              <a href="#" className="hover:text-white transition-colors">Terms</a>
+            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
+            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
+            <a href="/careers" className="hover:text-brand-cyan transition-colors font-medium">Karir</a>
           </div>
         </div>
       </div>
@@ -450,100 +582,68 @@ const Footer = ({ waLink }: { waLink: string }) => {
   );
 };
 
-// --- APP COMPONENT ---
+// ─── APP ──────────────────────────────────────────────────────────────────────
 function App() {
-  // --- REFERRAL LOGIC START ---
-  const defaultNumber = "6285797009915";
-  const [waLink, setWaLink] = useState("");
-
-  // Pesan Default
-  const message = "Kak+Saya+mau+Konsultasi+SaaS,+AI,+dan+Website";
+  const defaultNumber = '6285797009915';
+  const [waLink, setWaLink] = useState('');
+  const message = 'Kak+Saya+mau+Konsultasi+SaaS,+AI,+dan+Website';
 
   useEffect(() => {
     const fetchReferral = async () => {
-      // 1. Ambil params dari URL
       const queryParams = new URLSearchParams(window.location.search);
-      const refNumber = queryParams.get("refNumber");
+      const refNumber = queryParams.get('refNumber');
       let targetNumber = defaultNumber;
 
       if (refNumber) {
-        // 2. Cek ke Supabase jika refNumber ada
         const { data, error } = await supabase
           .from('referrals')
           .select('phone_number')
           .eq('ref_number', refNumber)
           .single();
 
-        if (error) {
-          console.error("Referral error or not found:", error.message);
-        } else if (data) {
+        if (!error && data) {
           targetNumber = data.phone_number;
         }
       }
 
-      // 3. Update State Link WA
       setWaLink(`https://wa.me/${targetNumber}?text=${message}`);
     };
     fetchReferral();
   }, []);
-  // --- REFERRAL LOGIC END ---
 
   return (
-    <div className="bg-brand-dark min-h-screen text-white selection:bg-brand-cyan/30 selection:text-white font-sans antialiased">
+    <div className="bg-brand-bg min-h-screen text-brand-dark font-sans antialiased">
+      {/* Navbar is a layer component — floats above all content */}
       <Navbar waLink={waLink} />
+
       <main>
+        {/* 1. Hero — full-height section, starts from top (no padding-top needed) */}
         <Hero waLink={waLink} />
-        <Services /> 
-        
+
+        {/* 2. Masalah & Solusi — overlaps hero bottom with top border-radius for 3D effect */}
+        <ProblemSolution />
+
+        {/* 3. Portfolio */}
         <Portfolio />
-        
-        <Process /> 
-        
-        <Features /> 
-        
-        <About /> 
-        
-        <Packages waLink={waLink} />
-        
-        {/* Call to Action Section (Premium Warp Style) */}
-        <section className="py-32 px-4 relative overflow-hidden">
-             <div className="absolute inset-0 bg-brand-dark/90 z-0"></div>
-             {/* Gradient Orb Background */}
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[600px] bg-gradient-to-r from-brand-primary/20 to-brand-cyan/20 rounded-full blur-[100px] pointer-events-none" />
 
-          <div className="max-w-5xl mx-auto relative z-10 text-center">
-             <motion.div
-                initial={{ opacity: 0, scale: 0.9 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="bg-white/5 border border-white/10 backdrop-blur-2xl rounded-[3rem] p-12 md:p-20 shadow-2xl relative overflow-hidden group"
-             >
-                  {/* Hover spotlight effect */}
-                  <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none" />
-                  
-                  <h2 className="text-4xl md:text-6xl font-bold text-white mb-8 tracking-tight">
-                    Siap Mengubah <span className="text-brand-cyan">Ide Menjadi Nyata?</span>
-                  </h2>
-                  <p className="text-gray-300 text-xl mb-10 max-w-2xl mx-auto">
-                    Jangan biarkan kompetitor mendahului Anda. Mari bangun sistem digital yang canggih bersama kami sekarang.
-                  </p>
-                  
-                  <a
-                    href={waLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-3 bg-gradient-to-r from-brand-primary to-brand-cyan text-white px-10 py-5 rounded-full font-bold text-lg hover:shadow-[0_0_40px_rgba(6,182,212,0.4)] hover:scale-105 transition-all"
-                  >
-                    Hubungi Kami Sekarang <Rocket size={20} />
-                  </a>
-             </motion.div>
-          </div>
-        </section>
+        {/* 4. Tentang & Layanan */}
+        <About />
 
-        <Chatbot />
-        
+        {/* 5. Cara Kami Bekerja */}
+        <Process />
+
+        {/* 6. CTA */}
+        <CTASection waLink={waLink} />
+
+        {/* 7. Paket Harga */}
+        <Package />
       </main>
+
+      {/* Footer */}
       <Footer waLink={waLink} />
+
+      {/* Chatbot */}
+      <Chatbot />
     </div>
   );
 }
