@@ -63,7 +63,7 @@ const jobs = [
     type: 'Freelance / Commission',
     location: 'Remote / Seluruh Indonesia',
     salary: 'Komisi + Bonus Tinggi',
-    salaryNote: 'Komisi 10–15% per deal + bonus performance bulanan',
+    salaryNote: 'Komisi 50% per deal + bonus performance bulanan',
     icon: <TrendingUp size={24} />,
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
