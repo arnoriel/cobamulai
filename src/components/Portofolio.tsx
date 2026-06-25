@@ -69,10 +69,8 @@ const projects: Project[] = [
   },
 ];
 
-// Local gradient mockup — no external service, no auth errors
 const ProjectMockup = ({ project }: { project: Project }) => (
   <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg">
-    {/* Browser chrome */}
     <div className="bg-[#1e1e2e] px-4 py-2.5 flex items-center gap-3">
       <div className="flex gap-1.5 flex-shrink-0">
         <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -87,12 +85,10 @@ const ProjectMockup = ({ project }: { project: Project }) => (
       </div>
     </div>
 
-    {/* Gradient preview area */}
     <div
       className={`bg-gradient-to-br ${project.gradient} relative overflow-hidden`}
       style={{ height: 220 }}
     >
-      {/* Subtle noise texture */}
       <div
         className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
@@ -100,9 +96,7 @@ const ProjectMockup = ({ project }: { project: Project }) => (
         }}
       />
 
-      {/* Mock site UI */}
       <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-        {/* Top: logo + nav */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center font-display font-bold text-white text-sm flex-shrink-0">
@@ -120,7 +114,6 @@ const ProjectMockup = ({ project }: { project: Project }) => (
           </div>
         </div>
 
-        {/* Middle: content lines */}
         <div className="space-y-2">
           {project.mockupLines.map((line, i) => (
             <div key={i} className="flex gap-1">
@@ -135,7 +128,6 @@ const ProjectMockup = ({ project }: { project: Project }) => (
           ))}
         </div>
 
-        {/* Bottom: CTA buttons */}
         <div className="flex gap-2.5">
           <div className="px-4 py-1.5 bg-white/25 backdrop-blur-sm rounded-lg">
             <div className="w-14 h-1.5 bg-white/70 rounded-full" />
@@ -155,7 +147,6 @@ const Portfolio = () => {
       <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -181,7 +172,6 @@ const Portfolio = () => {
           </div>
         </motion.div>
 
-        {/* Projects Grid */}
         <div className="grid md:grid-cols-2 gap-7">
           {projects.map((project, index) => (
             <motion.div
@@ -194,7 +184,10 @@ const Portfolio = () => {
             >
               {/* Mockup Preview + hover overlay */}
               <div className="relative overflow-hidden">
-                <ProjectMockup project={project} />
+                {/* pointer-events-none prevents mockup from blocking the overlay <a> */}
+                <div className="pointer-events-none">
+                  <ProjectMockup project={project} />
+                </div>
                 <a
                   href={project.url}
                   target="_blank"
@@ -235,7 +228,6 @@ const Portfolio = () => {
 
                 <p className="text-brand-slate text-sm leading-relaxed mb-4">{project.description}</p>
 
-                {/* Tech pills */}
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((t) => (
                     <span
