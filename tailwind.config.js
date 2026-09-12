@@ -24,7 +24,7 @@ export default {
         }
       },
       fontFamily: {
-        display: ['"Fraunces"', 'serif'],
+        display: ['"Manrope"', 'sans-serif'],
         sans: ['"Inter"', 'sans-serif'],
       },
       backdropBlur: {

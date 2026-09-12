@@ -7,7 +7,6 @@ interface Project {
   description: string;
   url: string;
   tag: string;
-  tech: string[];
   accent: string;
   accentLight: string;
   initial: string;
@@ -22,7 +21,6 @@ const projects: Project[] = [
       'Agensi digital marketing halal — strategi konten, iklan, dan branding untuk bisnis Muslim yang ingin tumbuh secara etis dan konsisten.',
     url: 'https://thesunnahmarketing.com',
     tag: 'AGENCY · MARKETING',
-    tech: ['React', 'Vite', 'Tailwind'],
     accent: '#059669',
     accentLight: '#D1FAE5',
     initial: 'SM',
@@ -35,7 +33,6 @@ const projects: Project[] = [
       'Website brand modern dengan tampilan bersih dan storytelling produk yang fokus pada kepercayaan dan konversi pengunjung.',
     url: 'https://rootivara.com',
     tag: 'WEB DESIGN · BRAND',
-    tech: ['React', 'Tailwind', 'Vercel'],
     accent: '#7C3AED',
     accentLight: '#EDE9FE',
     initial: 'RT',
@@ -48,7 +45,6 @@ const projects: Project[] = [
       'Platform transformasi personal — desain hangat dan mengundang untuk program coaching kesehatan dan gaya hidup.',
     url: 'https://buildanewyou.id',
     tag: 'WEB DESIGN · COACHING',
-    tech: ['React', 'Vite', 'Tailwind'],
     accent: '#D97706',
     accentLight: '#FEF3C7',
     initial: 'BN',
@@ -61,7 +57,6 @@ const projects: Project[] = [
       'Sistem manajemen klinik fisioterapi — booking pasien, jadwal terapis, dan rekam medis dalam satu dashboard terintegrasi.',
     url: 'https://griyafisio.com',
     tag: 'WEB APP · KLINIK',
-    tech: ['Next.js', 'Laravel', 'MySQL'],
     accent: '#0EA5E9',
     accentLight: '#E0F2FE',
     initial: 'GF',
@@ -74,7 +69,6 @@ const projects: Project[] = [
       'Platform jual-beli hewan kurban dan ternak — katalog produk, kalkulator harga, dan alur pemesanan yang mudah dipakai.',
     url: 'https://jualsapiberkah.com',
     tag: 'E-COMMERCE · LIVESTOCK',
-    tech: ['React', 'Vite', 'Tailwind'],
     accent: '#059669',
     accentLight: '#D1FAE5',
     initial: 'JS',
@@ -87,7 +81,6 @@ const projects: Project[] = [
       'Website korporat untuk layanan keamanan & logistik — profil perusahaan yang solid dengan nuansa profesional dan tepercaya.',
     url: 'https://safgo.co.id',
     tag: 'CORPORATE · SERVICE',
-    tech: ['React', 'Tailwind', 'Vercel'],
     accent: '#4F46E5',
     accentLight: '#E0E7FF',
     initial: 'SG',
@@ -99,8 +92,7 @@ const projects: Project[] = [
     description:
       'Website lifestyle bergaya Jepang minimalis — tata letak rapi dan tipografi bersih untuk pengalaman menjelajah yang tenang.',
     url: 'https://momokurasu.com',
-    tag: 'WEB DESIGN · LIFESTYLE',
-    tech: ['React', 'Vite', 'Tailwind'],
+    tag: 'WEB DESIGN · LEARNING',
     accent: '#D97706',
     accentLight: '#FEF3C7',
     initial: 'MK',
@@ -374,22 +366,6 @@ const Portfolio = () => {
 
                 <p className="text-brand-slate text-sm leading-relaxed mb-4">{project.description}</p>
 
-                {/* Tech pills */}
-                <div className="flex flex-wrap gap-2">
-                  {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="px-2.5 py-1 rounded-lg text-xs font-medium font-mono border"
-                      style={{
-                        backgroundColor: project.accentLight,
-                        color: project.accent,
-                        borderColor: `${project.accent}28`,
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
               </div>
             </motion.div>
           ))}

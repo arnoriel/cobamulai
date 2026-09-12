@@ -157,7 +157,7 @@ const Hero = ({ waLink }: { waLink: string }) => {
             >
               Bisnis Anda,
               <br />
-              <span className="text-sky-300">Diperkuat AI.</span>
+              <span className="text-sky-300">Diperkuat AI & Developer Handal.</span>
             </motion.h1>
 
             <motion.p
@@ -264,19 +264,6 @@ const Hero = ({ waLink }: { waLink: string }) => {
               ))}
             </div>
 
-            {/* Bottom wide strip — tech stack ticker */}
-            <div className="glass-hero rounded-[22px] px-6 py-4 flex items-center justify-between gap-4">
-              <span className="text-white/50 text-xs font-medium tracking-wide uppercase flex-shrink-0">Dibangun dengan</span>
-              <div className="flex items-center gap-4 text-white/70 text-xs font-mono">
-                <span>React</span>
-                <span className="w-1 h-1 rounded-full bg-white/25" />
-                <span>Next.js</span>
-                <span className="w-1 h-1 rounded-full bg-white/25" />
-                <span>Supabase</span>
-                <span className="w-1 h-1 rounded-full bg-white/25" />
-                <span>OpenAI</span>
-              </div>
-            </div>
           </motion.div>
         </div>
       </div>
@@ -427,7 +414,7 @@ const ProblemSolution = () => {
           {[
             { value: '50+', label: 'Proyek Live', icon: <Rocket size={16} className="text-brand-blue" /> },
             { value: '100%', label: 'Klien Puas', icon: <Star size={16} className="text-amber-500" /> },
-            { value: '4+', label: 'Tahun Pengalaman', icon: <Briefcase size={16} className="text-indigo-500" /> },
+            { value: '5+', label: 'Tahun Pengalaman', icon: <Briefcase size={16} className="text-indigo-500" /> },
             { value: '24', label: 'Model AI Dipakai', icon: <Bot size={16} className="text-emerald-500" /> },
           ].map((stat, i) => (
             <div key={i} className="text-center">
