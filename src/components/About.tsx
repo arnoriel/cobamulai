@@ -10,6 +10,7 @@ import {
   ShieldCheck,
   Code2,
   BarChart3,
+  Wrench,
 } from 'lucide-react';
 
 const stats = [
@@ -86,6 +87,17 @@ const services = [
     tag: null,
     tagColor: '',
   },
+  {
+    icon: <Wrench size={22} />,
+    title: 'Developer Support',
+    desc: 'Maintenance rutin, perbaikan bug, penambahan fitur baru, serta penyesuaian keamanan dan optimasi performa — website Anda tetap sehat pasca-launch.',
+    color: 'text-rose-600',
+    bg: 'bg-rose-50',
+    border: 'border-rose-100',
+    hoverBorder: 'hover:border-rose-200',
+    tag: 'New',
+    tagColor: 'bg-rose-100 text-rose-600',
+  },
 ];
 
 const About = () => {
@@ -99,10 +111,11 @@ const About = () => {
         <div className="grid lg:grid-cols-2 gap-16 items-center mb-24">
           {/* Left: Text */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+            className="reveal"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-border text-brand-blue text-sm font-semibold mb-7 shadow-card">
               Tentang Cobamulai
@@ -133,18 +146,18 @@ const About = () => {
 
           {/* Right: Stats Grid */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="grid grid-cols-2 gap-5"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+            className="reveal grid grid-cols-2 gap-5"
           >
             {stats.map((stat, idx) => (
               <motion.div
                 key={idx}
-                whileHover={{ y: -4, boxShadow: '0 8px 30px rgba(37,99,235,0.1)' }}
+                whileHover={{ y: -4 }}
                 transition={{ type: 'spring', stiffness: 300 }}
-                className={`p-6 rounded-2xl bg-white border border-brand-border shadow-card transition-all ${
+                className={`p-6 rounded-2xl bg-white border border-brand-border shadow-card hover:shadow-card-hover transition-shadow ${
                   idx % 2 === 1 ? 'mt-6' : ''
                 }`}
               >
@@ -165,8 +178,9 @@ const About = () => {
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="text-center mb-12"
+            viewport={{ once: true, amount: 0.3 }}
+            transition={{ duration: 0.5 }}
+            className="reveal text-center mb-12"
           >
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-border text-brand-blue text-sm font-semibold mb-5 shadow-card">
               Ekosistem Layanan
@@ -179,15 +193,21 @@ const About = () => {
             </p>
           </motion.div>
 
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          <div className="bento-grid sm:grid-cols-2 lg:grid-cols-3">
             {services.map((service, index) => (
               <motion.div
                 key={index}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.07, duration: 0.5 }}
-                className={`group relative bg-white rounded-2xl p-6 border ${service.border} ${service.hoverBorder} shadow-card hover:shadow-card-hover transition-all duration-300 cursor-default`}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: Math.min(index, 3) * 0.05, duration: 0.45 }}
+                className={`reveal group relative bg-white rounded-2xl p-6 border ${service.border} ${service.hoverBorder} shadow-card hover:shadow-card-hover transition-shadow duration-300 cursor-default ${
+                  // Center the lone last card when the count doesn't
+                  // divide evenly into 3 columns (e.g. 7 services).
+                  services.length % 3 === 1 && index === services.length - 1
+                    ? 'lg:col-start-2'
+                    : ''
+                }`}
               >
                 {/* Tag */}
                 {service.tag && (

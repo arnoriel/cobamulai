@@ -8,22 +8,27 @@ export default {
     extend: {
       colors: {
         brand: {
-          bg: "#F8FBFF",
+          bg: "#F6F7FB",
           white: "#FFFFFF",
           blue: "#2563EB",
           indigo: "#4F46E5",
           cyan: "#0EA5E9",
-          dark: "#0F172A",
+          dark: "#0B0F19",
           navy: "#1E3A5F",
           slate: "#64748B",
-          border: "#E2E8F0",
-          soft: "#EFF6FF",
+          border: "#E7E9F0",
+          soft: "#EEF1FA",
           muted: "#94A3B8",
+          glass: "rgba(255,255,255,0.6)",
+          glassBorder: "rgba(255,255,255,0.5)",
         }
       },
       fontFamily: {
-        display: ['"Bricolage Grotesque"', 'sans-serif'],
-        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+        display: ['"Fraunces"', 'serif'],
+        sans: ['"Inter"', 'sans-serif'],
+      },
+      backdropBlur: {
+        xs: '2px',
       },
       keyframes: {
         'fade-up': {
@@ -69,10 +74,12 @@ export default {
         'marquee': 'marquee 30s linear infinite',
       },
       boxShadow: {
-        'card': '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06)',
-        'card-hover': '0 4px 24px rgba(37,99,235,0.12), 0 1px 4px rgba(0,0,0,0.06)',
+        'card': '0 1px 2px rgba(15,23,42,0.04), 0 8px 24px rgba(15,23,42,0.05)',
+        'card-hover': '0 4px 16px rgba(37,99,235,0.08), 0 16px 40px rgba(15,23,42,0.08)',
         'blue-glow': '0 0 40px rgba(37,99,235,0.2)',
         'blue-sm': '0 2px 12px rgba(37,99,235,0.15)',
+        'glass': '0 1px 1px rgba(255,255,255,0.6) inset, 0 8px 32px rgba(15,23,42,0.08)',
+        'glass-dark': '0 1px 1px rgba(255,255,255,0.08) inset, 0 8px 32px rgba(0,0,0,0.35)',
       },
     },
   },

@@ -124,9 +124,9 @@ const Packages = ({ waLink }: { waLink?: string }) => {
         <motion.div
           initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.55 }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="reveal text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-soft border border-blue-100 text-brand-blue text-sm font-semibold mb-6 shadow-card">
             <Star size={13} className="fill-brand-blue text-brand-blue" />
@@ -148,11 +148,11 @@ const Packages = ({ waLink }: { waLink?: string }) => {
           {packages.map((pkg, index) => (
             <motion.div
               key={pkg.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.5 }}
-              className={`relative rounded-3xl transition-all duration-300 group ${
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: index * 0.08, duration: 0.45 }}
+              className={`reveal relative rounded-3xl transition-shadow duration-300 group ${
                 pkg.featured
                   ? 'lg:-mt-4 lg:mb-4'
                   : ''
@@ -249,7 +249,7 @@ const Packages = ({ waLink }: { waLink?: string }) => {
                   href={ctaLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group/btn w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl font-semibold text-sm transition-all duration-300 ${
+                  className={`group/btn w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl font-semibold text-sm transition-[transform,opacity] duration-300 ${
                     pkg.featured
                       ? 'text-white hover:opacity-90 hover:scale-[1.02]'
                       : 'text-brand-dark hover:scale-[1.01]'
@@ -282,9 +282,9 @@ const Packages = ({ waLink }: { waLink?: string }) => {
         <motion.div
           initial={{ opacity: 0, y: 16 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.35 }}
-          className="mt-12 flex flex-col sm:flex-row items-center justify-between gap-5 bg-brand-soft rounded-2xl border border-blue-100 px-7 py-5"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="reveal mt-12 flex flex-col sm:flex-row items-center justify-between gap-5 bg-brand-soft rounded-2xl border border-blue-100 px-7 py-5"
         >
           <div>
             <p className="font-display font-bold text-brand-dark text-sm mb-0.5">
@@ -298,7 +298,7 @@ const Packages = ({ waLink }: { waLink?: string }) => {
             href={ctaLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-blue-700 transition-all shadow-blue-sm whitespace-nowrap flex-shrink-0"
+            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-xl bg-brand-blue text-white text-sm font-semibold hover:bg-blue-700 transition-colors shadow-blue-sm whitespace-nowrap flex-shrink-0"
           >
             <MessageCircle size={15} />
             Diskusi Kebutuhan Anda →

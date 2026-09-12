@@ -1,5 +1,6 @@
+import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Sparkles, Globe } from 'lucide-react';
+import { ExternalLink, Globe } from 'lucide-react';
 
 interface Project {
   title: string;
@@ -16,25 +17,12 @@ interface Project {
 
 const projects: Project[] = [
   {
-    title: 'CuanClip AI',
-    description:
-      'Platform AI video clipping otomatis — unggah video panjang, dapatkan klip pendek viral siap upload dalam hitungan menit. Didukung teknologi FFmpeg & AI.',
-    url: 'https://ai.cuanclip.com',
-    tag: 'SAAS · AI VIDEO',
-    tech: ['React', 'FastAPI', 'FFmpeg', 'Supabase'],
-    accent: '#7C3AED',
-    accentLight: '#EDE9FE',
-    initial: 'CC',
-    gradient: 'from-purple-600 via-indigo-600 to-violet-700',
-    mockupLines: ['████████████████████', '█████████████', '██████████████████████'],
-  },
-  {
     title: 'The Sunnah Marketing',
     description:
       'Agensi digital marketing halal — strategi konten, iklan, dan branding untuk bisnis Muslim yang ingin tumbuh secara etis dan konsisten.',
     url: 'https://thesunnahmarketing.com',
     tag: 'AGENCY · MARKETING',
-    tech: ['React', 'Vite', 'Tailwind', 'SSR'],
+    tech: ['React', 'Vite', 'Tailwind'],
     accent: '#059669',
     accentLight: '#D1FAE5',
     initial: 'SM',
@@ -42,30 +30,82 @@ const projects: Project[] = [
     mockupLines: ['████████████████████', '███████████', '████████████████████████'],
   },
   {
-    title: 'Alsytes',
+    title: 'Rootivara',
     description:
-      'AI Website Generator berbasis agen — buat website profesional hanya dengan deskripsi teks. Powered by agentic AI pipeline yang otomatis handle desain hingga deployment.',
-    url: 'https://alsytes.dev',
-    tag: 'SAAS · AI BUILDER',
-    tech: ['Next.js', 'AI Agent', 'TypeScript', 'Vercel'],
+      'Website brand modern dengan tampilan bersih dan storytelling produk yang fokus pada kepercayaan dan konversi pengunjung.',
+    url: 'https://rootivara.com',
+    tag: 'WEB DESIGN · BRAND',
+    tech: ['React', 'Tailwind', 'Vercel'],
+    accent: '#7C3AED',
+    accentLight: '#EDE9FE',
+    initial: 'RT',
+    gradient: 'from-purple-600 via-indigo-600 to-violet-700',
+    mockupLines: ['████████████████████', '█████████████', '██████████████████████'],
+  },
+  {
+    title: 'Build a New You',
+    description:
+      'Platform transformasi personal — desain hangat dan mengundang untuk program coaching kesehatan dan gaya hidup.',
+    url: 'https://buildanewyou.id',
+    tag: 'WEB DESIGN · COACHING',
+    tech: ['React', 'Vite', 'Tailwind'],
+    accent: '#D97706',
+    accentLight: '#FEF3C7',
+    initial: 'BN',
+    gradient: 'from-amber-500 via-orange-500 to-yellow-600',
+    mockupLines: ['█████████████████████', '█████████████', '██████████████████████'],
+  },
+  {
+    title: 'Griya Fisioterapi',
+    description:
+      'Sistem manajemen klinik fisioterapi — booking pasien, jadwal terapis, dan rekam medis dalam satu dashboard terintegrasi.',
+    url: 'https://griyafisio.com',
+    tag: 'WEB APP · KLINIK',
+    tech: ['Next.js', 'Laravel', 'MySQL'],
     accent: '#0EA5E9',
     accentLight: '#E0F2FE',
-    initial: 'AL',
+    initial: 'GF',
     gradient: 'from-cyan-600 via-sky-600 to-blue-700',
     mockupLines: ['██████████████████', '████████████████████████', '███████████'],
   },
   {
-    title: 'Benvenuto',
+    title: 'Jual Sapi Berkah',
     description:
-      'Website restoran premium bergaya Italia — desain immersive dengan animasi sinematik, menu interaktif, dan experience visual yang mengundang selera.',
-    url: 'https://benvenuto-beta.vercel.app',
-    tag: 'WEB DESIGN · RESTO',
-    tech: ['React', 'Framer Motion', 'Tailwind', 'Vercel'],
+      'Platform jual-beli hewan kurban dan ternak — katalog produk, kalkulator harga, dan alur pemesanan yang mudah dipakai.',
+    url: 'https://jualsapiberkah.com',
+    tag: 'E-COMMERCE · LIVESTOCK',
+    tech: ['React', 'Vite', 'Tailwind'],
+    accent: '#059669',
+    accentLight: '#D1FAE5',
+    initial: 'JS',
+    gradient: 'from-emerald-600 via-lime-600 to-green-700',
+    mockupLines: ['████████████████████', '███████████', '████████████████████████'],
+  },
+  {
+    title: 'Safgo',
+    description:
+      'Website korporat untuk layanan keamanan & logistik — profil perusahaan yang solid dengan nuansa profesional dan tepercaya.',
+    url: 'https://safgo.co.id',
+    tag: 'CORPORATE · SERVICE',
+    tech: ['React', 'Tailwind', 'Vercel'],
+    accent: '#4F46E5',
+    accentLight: '#E0E7FF',
+    initial: 'SG',
+    gradient: 'from-indigo-600 via-blue-600 to-cyan-700',
+    mockupLines: ['█████████████████████', '████████████████', '██████████████████████'],
+  },
+  {
+    title: 'Momokurasu',
+    description:
+      'Website lifestyle bergaya Jepang minimalis — tata letak rapi dan tipografi bersih untuk pengalaman menjelajah yang tenang.',
+    url: 'https://momokurasu.com',
+    tag: 'WEB DESIGN · LIFESTYLE',
+    tech: ['React', 'Vite', 'Tailwind'],
     accent: '#D97706',
     accentLight: '#FEF3C7',
-    initial: 'BV',
-    gradient: 'from-amber-500 via-orange-500 to-yellow-600',
-    mockupLines: ['█████████████████████', '█████████████', '██████████████████████'],
+    initial: 'MK',
+    gradient: 'from-rose-500 via-orange-400 to-amber-500',
+    mockupLines: ['████████████████████', '█████████████', '██████████████████████'],
   },
 ];
 
@@ -149,6 +189,97 @@ const ProjectMockup = ({ project }: { project: Project }) => (
   </div>
 );
 
+// Live iframe preview — renders the actual site, scaled down to fit
+// the card. Some sites send X-Frame-Options/CSP headers that block
+// embedding entirely (outside our control); if the iframe doesn't
+// fire onLoad within the timeout, or the browser blocks it, we fall
+// back to the gradient mockup instead of leaving a blank box.
+const LivePreview = ({ project }: { project: Project }) => {
+  const [status, setStatus] = useState<'loading' | 'loaded' | 'blocked'>('loading');
+  const [scale, setScale] = useState(0.28);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  // Render the site at a fixed "desktop" size, then scale the whole
+  // iframe down uniformly to fit the actual card width. Using a
+  // fixed source size + measured scale (rather than scaling to a
+  // fixed pixel height) is what keeps every site cropped to the same
+  // proportion of its page — previously each card used a different
+  // effective crop depending on its own content height.
+  const previewWidth = 1440;
+  const previewHeight = 900;
+
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+    const update = () => setScale(el.offsetWidth / previewWidth);
+    update();
+    const ro = new ResizeObserver(update);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  useEffect(() => {
+    timeoutRef.current = setTimeout(() => setStatus((s) => (s === 'loading' ? 'blocked' : s)), 6000);
+    return () => clearTimeout(timeoutRef.current);
+  }, []);
+
+  if (status === 'blocked') {
+    return <ProjectMockup project={project} />;
+  }
+
+  return (
+    <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg">
+      {/* Browser chrome */}
+      <div className="bg-[#1e1e2e] px-4 py-2.5 flex items-center gap-3">
+        <div className="flex gap-1.5 flex-shrink-0">
+          <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
+          <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
+          <div className="w-3 h-3 rounded-full bg-[#28c840]" />
+        </div>
+        <div className="flex-1 bg-white/8 rounded-md px-3 py-1 flex items-center gap-1.5 min-w-0">
+          <Globe size={10} className="text-slate-400 flex-shrink-0" />
+          <span className="text-[11px] text-slate-400 font-mono truncate">
+            {project.url.replace('https://', '')}
+          </span>
+        </div>
+      </div>
+
+      {/* Fixed aspect-ratio viewport so every card crops the same
+          proportion of the page, regardless of that site's own
+          content height. */}
+      <div
+        ref={containerRef}
+        className="relative overflow-hidden bg-[#0e0e16]"
+        style={{ aspectRatio: `${previewWidth} / ${previewHeight}` }}
+      >
+        {status === 'loading' && (
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-6 h-6 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
+          </div>
+        )}
+        <iframe
+          src={project.url}
+          title={project.title}
+          loading="lazy"
+          onLoad={() => setStatus('loaded')}
+          onError={() => setStatus('blocked')}
+          sandbox="allow-scripts allow-same-origin"
+          className="absolute top-0 left-0"
+          style={{
+            width: previewWidth,
+            height: previewHeight,
+            transform: `scale(${scale})`,
+            transformOrigin: 'top left',
+            border: 'none',
+            pointerEvents: 'none',
+          }}
+        />
+      </div>
+    </div>
+  );
+};
+
 const Portfolio = () => {
   return (
     <section id="portfolio" className="py-28 bg-white relative overflow-hidden">
@@ -159,12 +290,12 @@ const Portfolio = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="flex flex-col md:flex-row justify-between items-end mb-16 gap-6"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="reveal flex flex-col md:flex-row justify-between items-end mb-16 gap-6"
         >
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-soft border border-blue-100 text-brand-blue text-sm font-semibold mb-5">
-              <Sparkles size={14} />
               Karya Nyata
             </div>
             <h2 className="font-display text-4xl md:text-5xl font-extrabold text-brand-dark mb-4 tracking-tight">
@@ -181,28 +312,35 @@ const Portfolio = () => {
           </div>
         </motion.div>
 
-        {/* Projects Grid */}
-        <div className="grid md:grid-cols-2 gap-7">
+        {/* Projects Bento Grid */}
+        <div className="grid gap-7 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {projects.map((project, index) => (
             <motion.div
               key={project.url}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1, duration: 0.55 }}
-              className="group/card bg-white rounded-3xl border border-brand-border shadow-card hover:shadow-card-hover transition-all duration-300 overflow-hidden"
+              viewport={{ once: true, amount: 0.2 }}
+              transition={{ delay: Math.min(index, 3) * 0.06, duration: 0.45 }}
+              className={`reveal group/card bg-white rounded-3xl border border-brand-border shadow-card hover:shadow-card-hover transition-shadow duration-300 overflow-hidden ${
+                // When the count doesn't divide evenly into 3 columns,
+                // center the lone last item in its row instead of
+                // leaving it flush left.
+                projects.length % 3 === 1 && index === projects.length - 1
+                  ? 'xl:col-start-2'
+                  : ''
+              }`}
             >
               {/* Mockup Preview + hover overlay */}
               <div className="relative overflow-hidden">
-                <ProjectMockup project={project} />
+                <LivePreview project={project} />
                 <a
                   href={project.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="absolute inset-0 bg-brand-dark/0 group-hover/card:bg-brand-dark/45 transition-all duration-300 flex items-center justify-center"
+                  className="absolute inset-0 bg-brand-dark/0 group-hover/card:bg-brand-dark/45 transition-colors duration-300 flex items-center justify-center"
                   aria-label={`Buka ${project.title}`}
                 >
-                  <span className="opacity-0 group-hover/card:opacity-100 transition-all duration-300 scale-90 group-hover/card:scale-100 flex items-center gap-2 bg-white text-brand-dark font-bold text-sm px-6 py-3 rounded-full shadow-xl">
+                  <span className="opacity-0 group-hover/card:opacity-100 transition-[opacity,transform] duration-300 scale-90 group-hover/card:scale-100 flex items-center gap-2 bg-white text-brand-dark font-bold text-sm px-6 py-3 rounded-full shadow-xl">
                     Kunjungi Langsung <ExternalLink size={14} />
                   </span>
                 </a>

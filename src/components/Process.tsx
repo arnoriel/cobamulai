@@ -69,8 +69,9 @@ const Process = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="reveal text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-soft border border-blue-100 text-brand-blue text-sm font-semibold mb-6">
             Cara Kami Bekerja
@@ -94,18 +95,18 @@ const Process = () => {
             {steps.map((step, index) => (
               <motion.div
                 key={step.id}
-                initial={{ opacity: 0, y: 30 }}
+                initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: index * 0.12, duration: 0.5 }}
-                className="group flex flex-col items-center text-center lg:text-center"
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ delay: Math.min(index, 3) * 0.08, duration: 0.45 }}
+                className="reveal group flex flex-col items-center text-center lg:text-center"
               >
                 {/* Step Icon */}
                 <div className="relative mb-5">
                   <motion.div
                     whileHover={{ scale: 1.08 }}
                     transition={{ type: 'spring', stiffness: 300 }}
-                    className={`w-[72px] h-[72px] rounded-2xl ${step.bg} border-2 ${step.border} flex items-center justify-center ${step.color} shadow-card group-hover:shadow-card-hover transition-all mx-auto`}
+                    className={`w-[72px] h-[72px] rounded-2xl ${step.bg} border-2 ${step.border} flex items-center justify-center ${step.color} shadow-card group-hover:shadow-card-hover transition-shadow mx-auto`}
                   >
                     {step.icon}
                   </motion.div>
@@ -119,7 +120,7 @@ const Process = () => {
                 </div>
 
                 {/* Content */}
-                <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-card group-hover:shadow-card-hover group-hover:border-blue-100 transition-all duration-300 w-full">
+                <div className="bg-white rounded-2xl border border-brand-border p-5 shadow-card group-hover:shadow-card-hover group-hover:border-blue-100 transition-shadow duration-300 w-full">
                   {/* Duration badge */}
                   <span
                     className="inline-block px-2.5 py-1 rounded-full text-xs font-semibold mb-3"
@@ -147,9 +148,9 @@ const Process = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.4 }}
-          className="mt-16 bg-brand-soft rounded-2xl border border-blue-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-5"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="reveal mt-16 bg-brand-soft rounded-2xl border border-blue-100 p-6 flex flex-col sm:flex-row items-center justify-between gap-5"
         >
           <div>
             <p className="font-display font-bold text-brand-dark text-lg mb-1">Rata-rata waktu delivery: 7–30 hari kerja</p>

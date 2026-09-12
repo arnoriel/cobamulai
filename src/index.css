@@ -26,7 +26,10 @@ body {
 
 /* ── Hero Static Gradient ─────────────────────── */
 .hero-gradient {
-  background: #2563eb;
+  background:
+    radial-gradient(120% 80% at 15% 0%, rgba(96,165,250,0.55), transparent 55%),
+    radial-gradient(100% 70% at 100% 10%, rgba(129,140,248,0.4), transparent 50%),
+    linear-gradient(160deg, #0B1330 0%, #14204A 45%, #0B1330 100%);
 }
 
 /* ── Dot Grid Pattern ─────────────────────────── */
@@ -61,18 +64,116 @@ body {
   background-color: #EFF6FF;
 }
 
-/* ── Glass Card ───────────────────────────────── */
-.glass-card {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-}
-
 /* ── Gradient Text ────────────────────────────── */
 .text-gradient {
   background: linear-gradient(135deg, #2563eb, #0ea5e9);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+/* ── Liquid Glass ──────────────────────────────
+   Frosted, light-catching surface used across cards
+   on LIGHT backgrounds (white/soft-blue sections). */
+.glass {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(255,255,255,0.46));
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.6);
+  box-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.7) inset,
+    0 -1px 8px rgba(15, 23, 42, 0.03) inset,
+    0 12px 32px rgba(15, 23, 42, 0.06);
+}
+
+/* Frosted surface for cards sitting ON the dark navy hero.
+   Needs a darker, denser backing than .glass or white text
+   inside it becomes unreadable against the busy gradient
+   behind it (this was the washed-out blank-card bug). */
+.glass-hero {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(180deg, rgba(30,41,82,0.55), rgba(11,19,48,0.55));
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  box-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.1) inset,
+    0 12px 32px rgba(0, 0, 0, 0.35);
+}
+
+/* Navbar surface. Always dark & near-opaque regardless of
+   what scrolls underneath — the previous .glass-dark (built
+   for sitting on the hero only) went almost fully transparent
+   once the light sections scrolled behind it, which read as
+   a "broken/see-through" navbar. This one stays legible over
+   both the dark hero and the light sections below it. */
+.glass-nav {
+  position: relative;
+  background: rgba(10, 14, 28, 0.82);
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.28);
+}
+
+.glass-dark {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(180deg, rgba(255,255,255,0.14), rgba(255,255,255,0.05));
+  backdrop-filter: blur(20px) saturate(160%);
+  -webkit-backdrop-filter: blur(20px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow:
+    0 1px 1px rgba(255, 255, 255, 0.12) inset,
+    0 12px 32px rgba(0, 0, 0, 0.3);
+}
+
+/* Glass specular sheen — a single soft highlight, not a shine sweep */
+.glass::before,
+.glass-hero::before,
+.glass-dark::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(120% 100% at 15% 0%, rgba(255,255,255,0.25), transparent 55%);
+  pointer-events: none;
+  z-index: 0;
+}
+.glass > *, .glass-hero > *, .glass-dark > * {
+  position: relative;
+  z-index: 1;
+}
+
+/* ── Bento Grid helper ─────────────────────────── */
+.bento-grid {
+  display: grid;
+  gap: 1.25rem;
+  grid-auto-rows: minmax(0, 1fr);
+}
+
+/* ── Scroll-reveal fix ──────────────────────────
+   Root cause of the reported "blink/glitch": Framer Motion's
+   whileInView toggling opacity on elements that also had
+   GPU-composited blur/transform siblings caused a repaint
+   flash on re-entry. `will-change` promotes these to their
+   own layer up front so the browser doesn't repaint on
+   toggle. (Previously this also had `contain: paint`, but
+   that clips any child that intentionally pokes outside the
+   element's box — e.g. the step-number and "Paling Populer"
+   badges — so it's dropped in favor of `will-change` alone.) */
+.reveal {
+  will-change: opacity, transform;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

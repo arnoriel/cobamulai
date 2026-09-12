@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
 import {
   Bot,
-  Code2,
   Rocket,
   ArrowRight,
   Menu,
@@ -38,13 +37,13 @@ const Navbar = ({ waLink }: { waLink: string }) => {
 
   return (
     <div className="fixed top-5 inset-x-0 z-50 flex flex-col items-center px-4 pointer-events-none">
-      {/* ── Desktop: Squircle Dock ── */}
-      <div className="hidden lg:flex pointer-events-auto items-center gap-0.5 bg-neutral-900 rounded-[20px] px-2 py-2 shadow-2xl border border-white/[0.08]">
+      {/* ── Desktop: Glass Dock ── */}
+      <div className="hidden lg:flex pointer-events-auto items-center gap-0.5 glass-nav rounded-[20px] px-2 py-2">
         {links.map((item) => (
           <a
             key={item.label}
             href={item.href}
-            className="px-4 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-[12px] transition-all duration-200 whitespace-nowrap"
+            className="px-4 py-2.5 text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-[12px] transition-colors duration-200 whitespace-nowrap"
           >
             {item.label}
           </a>
@@ -54,17 +53,17 @@ const Navbar = ({ waLink }: { waLink: string }) => {
           href={waLink}
           target="_blank"
           rel="noopener noreferrer"
-          className="ml-1 px-5 py-2.5 bg-white text-neutral-900 text-sm font-bold rounded-[12px] hover:bg-white/90 transition-all shadow-sm whitespace-nowrap"
+          className="ml-1 px-5 py-2.5 bg-white text-neutral-900 text-sm font-bold rounded-[12px] hover:bg-white/90 transition-colors whitespace-nowrap"
         >
           Konsultasi Gratis
         </a>
       </div>
 
-      {/* ── Mobile: Squircle Hamburger Button ── */}
+      {/* ── Mobile: Glass Hamburger Button ── */}
       <div className="lg:hidden w-full flex justify-end pointer-events-auto">
         <button
           onClick={() => setIsOpen(!isOpen)}
-          className="w-12 h-12 bg-black rounded-[16px] flex items-center justify-center text-white shadow-2xl border border-white/10 transition-transform active:scale-95"
+          className="w-12 h-12 glass-nav rounded-[16px] flex items-center justify-center text-white transition-transform active:scale-95"
           aria-label="Toggle menu"
         >
           {isOpen ? <X size={20} /> : <Menu size={20} />}
@@ -75,11 +74,11 @@ const Navbar = ({ waLink }: { waLink: string }) => {
       <AnimatePresence>
         {isOpen && (
           <motion.div
-            initial={{ opacity: 0, y: -8, scale: 0.96 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -8, scale: 0.96 }}
-            transition={{ duration: 0.18 }}
-            className="lg:hidden pointer-events-auto mt-2 w-full max-w-xs bg-black rounded-[20px] p-2 shadow-2xl border border-white/10"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.18, ease: 'easeOut' }}
+            className="lg:hidden pointer-events-auto mt-2 w-full max-w-xs glass-nav rounded-[20px] p-2"
           >
             <div className="space-y-0.5">
               {links.map((item) => (
@@ -87,7 +86,7 @@ const Navbar = ({ waLink }: { waLink: string }) => {
                   key={item.label}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className="block px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-[12px] text-sm font-medium transition-all"
+                  className="block px-4 py-3 text-white/75 hover:text-white hover:bg-white/10 rounded-[12px] text-sm font-medium transition-colors"
                 >
                   {item.label}
                 </a>
@@ -99,7 +98,7 @@ const Navbar = ({ waLink }: { waLink: string }) => {
                 target="_blank"
                 rel="noopener noreferrer"
                 onClick={() => setIsOpen(false)}
-                className="block px-4 py-3 bg-white text-black font-bold text-sm rounded-[12px] text-center hover:bg-white/90 transition-all"
+                className="block px-4 py-3 bg-white text-black font-bold text-sm rounded-[12px] text-center hover:bg-white/90 transition-colors"
               >
                 Konsultasi Gratis
               </a>
@@ -114,23 +113,21 @@ const Navbar = ({ waLink }: { waLink: string }) => {
 // ─── HERO ─────────────────────────────────────────────────────────────────────
 const Hero = ({ waLink }: { waLink: string }) => {
   const { scrollY } = useScroll();
-  const opacity = useTransform(scrollY, [0, 400], [1, 0]);
+  const opacity = useTransform(scrollY, [0, 400], [1, 0.4]);
 
   const floatingCards = [
-    { icon: <Bot size={22} className="text-white" />, label: 'AI Chatbot', sub: 'Live in 60s', delay: 0 },
-    { icon: <Code2 size={22} className="text-white" />, label: 'Web SaaS', sub: 'Scalable', delay: 0.15 },
-    { icon: <TrendingUp size={22} className="text-white" />, label: 'Konversi+', sub: '+240%', delay: 0.3 },
+    { icon: <Bot size={20} className="text-white" />, label: 'AI Chatbot', sub: 'Live in 60s', trend: null },
+    { icon: <TrendingUp size={20} className="text-white" />, label: 'Konversi+', sub: '+240%', trend: 'Naik' },
   ];
 
   return (
     <section
       id="home"
       className="hero-gradient relative min-h-screen flex items-center overflow-hidden"
-      style={{ borderBottomLeftRadius: '4rem', borderBottomRightRadius: '4rem' }}
     >
       {/* White dot grid overlay */}
       <div
-        className="absolute inset-0 pointer-events-none opacity-50"
+        className="absolute inset-0 pointer-events-none opacity-30"
         style={{
           backgroundImage: 'radial-gradient(circle, rgba(255,255,255,0.15) 1px, transparent 1px)',
           backgroundSize: '32px 32px',
@@ -160,7 +157,7 @@ const Hero = ({ waLink }: { waLink: string }) => {
             >
               Bisnis Anda,
               <br />
-              <span className="text-sky-300">Diperkuat AI.</span>
+              <span className="text-sky-300">Diperkuat AI & Developer Handal.</span>
             </motion.h1>
 
             <motion.p
@@ -198,53 +195,75 @@ const Hero = ({ waLink }: { waLink: string }) => {
             </motion.div>
           </motion.div>
 
-          {/* ── Right: Floating Cards ── */}
+          {/* ── Right: Bento panel ── */}
           <motion.div
-            initial={{ opacity: 0, x: 40 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="relative hidden lg:flex justify-center items-center h-[480px]"
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+            className="relative hidden lg:flex flex-col gap-4 h-[560px]"
           >
-            {/* Glow orb */}
-            <div className="absolute w-64 h-64 bg-white/8 rounded-full blur-[60px]" />
+            <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
+              {/* Central identity card — spans full height on col 1 */}
+              <div className="row-span-2 glass-hero rounded-[28px] p-7 flex flex-col justify-between overflow-hidden relative">
+                {/* Accent glow inside the card */}
+                <div
+                  className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
+                  style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.35), transparent 70%)' }}
+                />
 
-            {/* Floating feature cards */}
-            {floatingCards.map((card, i) => (
-              <motion.div
-                key={i}
-                animate={{ y: [0, -10, 0] }}
-                transition={{ duration: 3 + i * 0.5, repeat: Infinity, delay: card.delay }}
-                className={`absolute rounded-2xl p-5 flex items-center gap-3 min-w-[185px] bg-white/15 backdrop-blur-md border border-white/20 shadow-xl ${
-                  i === 0 ? 'top-8 left-4' : i === 1 ? 'top-1/2 -translate-y-1/2 right-0' : 'bottom-12 left-12'
-                }`}
-                style={{ zIndex: 10 + i }}
-              >
-                <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                  {card.icon}
+                <div className="relative flex items-center justify-between">
+                  <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
+                    <Sparkles size={24} className="text-white" />
+                  </div>
+                  <span className="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-white/70 tracking-wide">
+                    v2.0
+                  </span>
                 </div>
-                <div>
-                  <p className="font-semibold text-white text-sm">{card.label}</p>
-                  <p className="text-white/60 text-xs">{card.sub}</p>
-                </div>
-              </motion.div>
-            ))}
 
-            {/* Central card */}
-            <motion.div
-              animate={{ scale: [1, 1.02, 1] }}
-              transition={{ duration: 4, repeat: Infinity }}
-              className="rounded-3xl p-8 w-64 text-center z-20 bg-white/15 backdrop-blur-md border border-white/25 shadow-2xl"
-            >
-              <div className="w-16 h-16 rounded-2xl bg-white/25 flex items-center justify-center mx-auto mb-4">
-                <Sparkles size={28} className="text-white" />
+                <div className="relative">
+                  <p className="font-display font-bold text-white text-2xl mb-1">cobamulai.</p>
+                  <p className="text-white/60 text-sm mb-5">AI & Web Studio</p>
+
+                  {/* Mini metric row */}
+                  <div className="grid grid-cols-2 gap-3 mb-5">
+                    <div className="rounded-xl bg-white/8 border border-white/10 px-3 py-2.5">
+                      <p className="font-display font-bold text-white text-lg leading-none mb-1">50+</p>
+                      <p className="text-white/50 text-[11px]">Proyek live</p>
+                    </div>
+                    <div className="rounded-xl bg-white/8 border border-white/10 px-3 py-2.5">
+                      <p className="font-display font-bold text-white text-lg leading-none mb-1">4.9</p>
+                      <p className="text-white/50 text-[11px]">Rating klien</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400" />
+                    <span className="text-xs text-white/70 font-medium">Tersedia untuk proyek baru</span>
+                  </div>
+                </div>
               </div>
-              <p className="font-display font-bold text-white text-xl mb-1">cobamulai.</p>
-              <p className="text-white/60 text-sm">AI & Web Studio</p>
-              <div className="mt-4 flex items-center justify-center gap-1.5">
-                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-                <span className="text-xs text-white/70 font-medium">Tersedia untuk proyek baru</span>
-              </div>
-            </motion.div>
+
+              {/* Feature cells */}
+              {floatingCards.map((card, i) => (
+                <div key={i} className="glass-hero rounded-[24px] p-5 flex flex-col justify-between">
+                  <div className="flex items-start justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
+                      {card.icon}
+                    </div>
+                    {card.trend && (
+                      <span className="text-[11px] font-semibold text-emerald-300 bg-emerald-400/10 px-2 py-0.5 rounded-full">
+                        {card.trend}
+                      </span>
+                    )}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-white text-sm leading-tight">{card.label}</p>
+                    <p className="text-white/55 text-xs">{card.sub}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
           </motion.div>
         </div>
       </div>
@@ -292,8 +311,9 @@ const ProblemSolution = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="text-center mb-16"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="reveal text-center mb-16"
         >
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-brand-border text-brand-blue text-sm font-semibold mb-6 shadow-card">
             Masalah & Solusi
@@ -312,11 +332,11 @@ const ProblemSolution = () => {
         <div className="grid md:grid-cols-2 gap-6">
           {/* Problem Card */}
           <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6 }}
-            className="bg-white rounded-3xl p-8 border border-brand-border shadow-card"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5 }}
+            className="reveal bg-white rounded-3xl p-8 border border-brand-border shadow-card"
           >
             <div className="flex items-center gap-3 mb-7">
               <div className="w-10 h-10 rounded-xl bg-red-50 flex items-center justify-center">
@@ -330,30 +350,26 @@ const ProblemSolution = () => {
 
             <div className="space-y-4">
               {problems.map((item, i) => (
-                <motion.div
+                <div
                   key={i}
-                  initial={{ opacity: 0, x: -10 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ delay: i * 0.08 }}
                   className="flex items-start gap-3 p-4 rounded-2xl bg-red-50/50 border border-red-100/80"
                 >
                   <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <X size={10} className="text-red-500" />
                   </div>
                   <p className="text-sm text-slate-700 leading-relaxed">{item.text}</p>
-                </motion.div>
+                </div>
               ))}
             </div>
           </motion.div>
 
           {/* Solution Card */}
           <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="bg-gradient-to-br from-brand-blue to-blue-700 rounded-3xl p-8 border border-blue-500/20 shadow-blue-glow relative overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.2 }}
+            transition={{ duration: 0.5, delay: 0.08 }}
+            className="reveal bg-gradient-to-br from-brand-blue to-blue-700 rounded-3xl p-8 border border-blue-500/20 shadow-blue-glow relative overflow-hidden"
           >
             {/* Decorative circles */}
             <div className="absolute top-[-30px] right-[-30px] w-48 h-48 rounded-full bg-white/5 pointer-events-none" />
@@ -372,19 +388,15 @@ const ProblemSolution = () => {
 
               <div className="space-y-4">
                 {solutions.map((item, i) => (
-                  <motion.div
+                  <div
                     key={i}
-                    initial={{ opacity: 0, x: 10 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ delay: i * 0.08 }}
                     className="flex items-start gap-3 p-4 rounded-2xl bg-white/10 border border-white/15"
                   >
                     <div className="w-5 h-5 rounded-full bg-white/25 flex items-center justify-center flex-shrink-0 mt-0.5">
                       <CheckCircle size={10} className="text-white" />
                     </div>
                     <p className="text-sm text-blue-50 leading-relaxed">{item.text}</p>
-                  </motion.div>
+                  </div>
                 ))}
               </div>
             </div>
@@ -395,9 +407,9 @@ const ProblemSolution = () => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.3 }}
-          className="mt-10 bg-white rounded-2xl border border-brand-border shadow-card p-6 flex flex-wrap gap-8 justify-around items-center"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5, delay: 0.15 }}
+          className="reveal mt-10 bg-white rounded-2xl border border-brand-border shadow-card p-6 flex flex-wrap gap-8 justify-around items-center"
         >
           {[
             { value: '50+', label: 'Proyek Live', icon: <Rocket size={16} className="text-brand-blue" /> },
@@ -425,10 +437,11 @@ const CTASection = ({ waLink }: { waLink: string }) => {
 
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 24 }}
           whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-gradient-to-br from-brand-blue via-blue-600 to-indigo-600 rounded-[2.5rem] p-12 md:p-20 text-center relative overflow-hidden shadow-blue-glow"
+          viewport={{ once: true, amount: 0.3 }}
+          transition={{ duration: 0.5 }}
+          className="reveal bg-gradient-to-br from-brand-blue via-blue-600 to-indigo-600 rounded-[2.5rem] p-12 md:p-20 text-center relative overflow-hidden shadow-blue-glow"
         >
           {/* Decorative */}
           <div className="absolute top-0 right-0 w-80 h-80 bg-white/5 rounded-full translate-x-1/3 -translate-y-1/3 pointer-events-none" />
@@ -436,14 +449,9 @@ const CTASection = ({ waLink }: { waLink: string }) => {
           <div className="absolute inset-0 line-grid opacity-20 pointer-events-none" />
 
           <div className="relative z-10">
-            <motion.div
-              initial={{ scale: 0.9, opacity: 0 }}
-              whileInView={{ scale: 1, opacity: 1 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 text-blue-100 text-sm font-medium mb-8 border border-white/20"
-            >
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/15 text-blue-100 text-sm font-medium mb-8 border border-white/20">
               Mulai dalam 48 jam
-            </motion.div>
+            </div>
 
             <h2 className="font-display text-4xl md:text-5xl lg:text-6xl font-extrabold text-white mb-6 tracking-tight leading-tight">
               Siap Ubah Ide Jadi
@@ -493,7 +501,7 @@ const Footer = ({ waLink }: { waLink: string }) => {
   };
 
   return (
-    <footer className="bg-brand-dark text-white pt-20 pb-10">
+    <footer className="bg-brand-dark text-white pt-20 pb-10 rounded-t-[3rem]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid md:grid-cols-5 gap-12 mb-16">
           {/* Brand */}
