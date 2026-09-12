@@ -44,7 +44,7 @@ const jobs = [
     requirements: [
       'Minimal 1 tahun pengalaman di web development (frontend/fullstack)',
       'Menguasai JavaScript/TypeScript dan minimal satu framework modern',
-      'Familiar dengan Git, REST API, dan deployment (Vercel/Railway/VPS)',
+      'Familiar dengan Git, dan REST API',
       'Bisa bekerja dengan deadline yang jelas',
       'Bonus: pengalaman dengan AI/ML integration',
     ],
@@ -63,7 +63,7 @@ const jobs = [
     type: 'Freelance / Commission',
     location: 'Remote / Seluruh Indonesia',
     salary: 'Komisi + Bonus Tinggi',
-    salaryNote: 'Komisi 10–15% per deal + bonus performance bulanan',
+    salaryNote: 'Komisi 50% per deal + bonus performance bulanan',
     icon: <TrendingUp size={24} />,
     color: 'text-emerald-600',
     bg: 'bg-emerald-50',
@@ -87,7 +87,7 @@ const jobs = [
       'Motivasi tinggi dan berorientasi hasil',
     ],
     benefits: [
-      'Komisi 10–15% per closed deal (tidak ada batas atas)',
+      'Komisi 50% per closed deal (tidak ada batas atas)',
       'Bonus bulanan berdasarkan performance',
       'Jam kerja bebas, fokus pada hasil',
       'Training produk dan teknik sales dari tim kami',

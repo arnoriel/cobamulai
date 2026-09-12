@@ -1,4 +1,3 @@
-import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { ExternalLink, Globe } from 'lucide-react';
 
@@ -109,10 +108,8 @@ const projects: Project[] = [
   },
 ];
 
-// Local gradient mockup — no external service, no auth errors
 const ProjectMockup = ({ project }: { project: Project }) => (
   <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg">
-    {/* Browser chrome */}
     <div className="bg-[#1e1e2e] px-4 py-2.5 flex items-center gap-3">
       <div className="flex gap-1.5 flex-shrink-0">
         <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
@@ -127,12 +124,10 @@ const ProjectMockup = ({ project }: { project: Project }) => (
       </div>
     </div>
 
-    {/* Gradient preview area */}
     <div
       className={`bg-gradient-to-br ${project.gradient} relative overflow-hidden`}
       style={{ height: 220 }}
     >
-      {/* Subtle noise texture */}
       <div
         className="absolute inset-0 opacity-20 pointer-events-none"
         style={{
@@ -140,9 +135,7 @@ const ProjectMockup = ({ project }: { project: Project }) => (
         }}
       />
 
-      {/* Mock site UI */}
       <div className="relative z-10 p-5 h-full flex flex-col justify-between">
-        {/* Top: logo + nav */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white/25 backdrop-blur-sm flex items-center justify-center font-display font-bold text-white text-sm flex-shrink-0">
@@ -160,7 +153,6 @@ const ProjectMockup = ({ project }: { project: Project }) => (
           </div>
         </div>
 
-        {/* Middle: content lines */}
         <div className="space-y-2">
           {project.mockupLines.map((line, i) => (
             <div key={i} className="flex gap-1">
@@ -175,7 +167,6 @@ const ProjectMockup = ({ project }: { project: Project }) => (
           ))}
         </div>
 
-        {/* Bottom: CTA buttons */}
         <div className="flex gap-2.5">
           <div className="px-4 py-1.5 bg-white/25 backdrop-blur-sm rounded-lg">
             <div className="w-14 h-1.5 bg-white/70 rounded-full" />
@@ -194,91 +185,6 @@ const ProjectMockup = ({ project }: { project: Project }) => (
 // embedding entirely (outside our control); if the iframe doesn't
 // fire onLoad within the timeout, or the browser blocks it, we fall
 // back to the gradient mockup instead of leaving a blank box.
-const LivePreview = ({ project }: { project: Project }) => {
-  const [status, setStatus] = useState<'loading' | 'loaded' | 'blocked'>('loading');
-  const [scale, setScale] = useState(0.28);
-  const containerRef = useRef<HTMLDivElement>(null);
-  const timeoutRef = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
-
-  // Render the site at a fixed "desktop" size, then scale the whole
-  // iframe down uniformly to fit the actual card width. Using a
-  // fixed source size + measured scale (rather than scaling to a
-  // fixed pixel height) is what keeps every site cropped to the same
-  // proportion of its page — previously each card used a different
-  // effective crop depending on its own content height.
-  const previewWidth = 1440;
-  const previewHeight = 900;
-
-  useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-    const update = () => setScale(el.offsetWidth / previewWidth);
-    update();
-    const ro = new ResizeObserver(update);
-    ro.observe(el);
-    return () => ro.disconnect();
-  }, []);
-
-  useEffect(() => {
-    timeoutRef.current = setTimeout(() => setStatus((s) => (s === 'loading' ? 'blocked' : s)), 6000);
-    return () => clearTimeout(timeoutRef.current);
-  }, []);
-
-  if (status === 'blocked') {
-    return <ProjectMockup project={project} />;
-  }
-
-  return (
-    <div className="rounded-xl overflow-hidden border border-white/10 shadow-lg">
-      {/* Browser chrome */}
-      <div className="bg-[#1e1e2e] px-4 py-2.5 flex items-center gap-3">
-        <div className="flex gap-1.5 flex-shrink-0">
-          <div className="w-3 h-3 rounded-full bg-[#ff5f57]" />
-          <div className="w-3 h-3 rounded-full bg-[#febc2e]" />
-          <div className="w-3 h-3 rounded-full bg-[#28c840]" />
-        </div>
-        <div className="flex-1 bg-white/8 rounded-md px-3 py-1 flex items-center gap-1.5 min-w-0">
-          <Globe size={10} className="text-slate-400 flex-shrink-0" />
-          <span className="text-[11px] text-slate-400 font-mono truncate">
-            {project.url.replace('https://', '')}
-          </span>
-        </div>
-      </div>
-
-      {/* Fixed aspect-ratio viewport so every card crops the same
-          proportion of the page, regardless of that site's own
-          content height. */}
-      <div
-        ref={containerRef}
-        className="relative overflow-hidden bg-[#0e0e16]"
-        style={{ aspectRatio: `${previewWidth} / ${previewHeight}` }}
-      >
-        {status === 'loading' && (
-          <div className="absolute inset-0 flex items-center justify-center">
-            <div className="w-6 h-6 border-2 border-white/20 border-t-white/70 rounded-full animate-spin" />
-          </div>
-        )}
-        <iframe
-          src={project.url}
-          title={project.title}
-          loading="lazy"
-          onLoad={() => setStatus('loaded')}
-          onError={() => setStatus('blocked')}
-          sandbox="allow-scripts allow-same-origin"
-          className="absolute top-0 left-0"
-          style={{
-            width: previewWidth,
-            height: previewHeight,
-            transform: `scale(${scale})`,
-            transformOrigin: 'top left',
-            border: 'none',
-            pointerEvents: 'none',
-          }}
-        />
-      </div>
-    </div>
-  );
-};
 
 const Portfolio = () => {
   return (
@@ -286,7 +192,6 @@ const Portfolio = () => {
       <div className="absolute inset-0 dot-grid opacity-40 pointer-events-none" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        {/* Header */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -312,8 +217,7 @@ const Portfolio = () => {
           </div>
         </motion.div>
 
-        {/* Projects Bento Grid */}
-        <div className="grid gap-7 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+        <div className="grid md:grid-cols-2 gap-7">
           {projects.map((project, index) => (
             <motion.div
               key={project.url}
@@ -332,7 +236,10 @@ const Portfolio = () => {
             >
               {/* Mockup Preview + hover overlay */}
               <div className="relative overflow-hidden">
-                <LivePreview project={project} />
+                {/* pointer-events-none prevents mockup from blocking the overlay <a> */}
+                <div className="pointer-events-none">
+                  <ProjectMockup project={project} />
+                </div>
                 <a
                   href={project.url}
                   target="_blank"
@@ -373,7 +280,6 @@ const Portfolio = () => {
 
                 <p className="text-brand-slate text-sm leading-relaxed mb-4">{project.description}</p>
 
-                {/* Tech pills */}
                 <div className="flex flex-wrap gap-2">
                   {project.tech.map((t) => (
                     <span
