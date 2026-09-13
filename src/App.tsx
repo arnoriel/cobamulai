@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useScroll, useTransform, useMotionValue, useSpring, AnimatePresence } from 'framer-motion';
 import {
   Bot,
   Rocket,
@@ -115,9 +115,50 @@ const Hero = ({ waLink }: { waLink: string }) => {
   const { scrollY } = useScroll();
   const opacity = useTransform(scrollY, [0, 400], [1, 0.4]);
 
+  // Respect reduced-motion preference — disable tilt/parallax entirely
+  const [reduceMotion, setReduceMotion] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setReduceMotion(mq.matches);
+    const handler = (e: MediaQueryListEvent) => setReduceMotion(e.matches);
+    mq.addEventListener('change', handler);
+    return () => mq.removeEventListener('change', handler);
+  }, []);
+
+  // Scroll parallax: each bento cell drifts at a slightly different rate
+  const parallaxMain = useTransform(scrollY, [0, 600], reduceMotion ? [0, 0] : [0, -28]);
+  const parallaxCard1 = useTransform(scrollY, [0, 600], reduceMotion ? [0, 0] : [0, -55]);
+  const parallaxCard2 = useTransform(scrollY, [0, 600], reduceMotion ? [0, 0] : [0, -15]);
+
+  // Mouse tilt: bento panel tilts toward cursor position (desktop only)
+  const bentoRef = useRef<HTMLDivElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const rotateX = useSpring(useTransform(mouseY, [-0.5, 0.5], [7, -7]), {
+    stiffness: 150,
+    damping: 20,
+  });
+  const rotateY = useSpring(useTransform(mouseX, [-0.5, 0.5], [-7, 7]), {
+    stiffness: 150,
+    damping: 20,
+  });
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (reduceMotion) return;
+    const rect = bentoRef.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set((e.clientX - rect.left) / rect.width - 0.5);
+    mouseY.set((e.clientY - rect.top) / rect.height - 0.5);
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
   const floatingCards = [
-    { icon: <Bot size={20} className="text-white" />, label: 'AI Chatbot', sub: 'Live in 60s', trend: null },
-    { icon: <TrendingUp size={20} className="text-white" />, label: 'Konversi+', sub: '+240%', trend: 'Naik' },
+    { icon: <Bot size={20} className="text-white" />, label: 'AI Chatbot', sub: 'Live in 60s', trend: null, img: 'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=300&q=60&auto=format&fit=crop' },
+    { icon: <TrendingUp size={20} className="text-white" />, label: 'Konversi+', sub: '+240%', trend: 'Naik', img: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&q=60&auto=format&fit=crop' },
   ];
 
   return (
@@ -125,6 +166,22 @@ const Hero = ({ waLink }: { waLink: string }) => {
       id="home"
       className="hero-gradient relative min-h-screen flex items-center overflow-hidden"
     >
+      {/* Background video */}
+      <video
+        autoPlay
+        loop
+        muted
+        playsInline
+        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+      >
+        <source src="/background.mp4" type="video/mp4" />
+      </video>
+      {/* Darken overlay — video shown at 70% opacity via dark wash */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{ background: 'rgba(11,19,48,0.7)' }}
+      />
+
       {/* White dot grid overlay */}
       <div
         className="absolute inset-0 pointer-events-none opacity-30"
@@ -200,39 +257,48 @@ const Hero = ({ waLink }: { waLink: string }) => {
             initial={{ opacity: 0, y: 16 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+            ref={bentoRef}
+            style={{ perspective: 1200 }}
             className="relative hidden lg:flex flex-col gap-4 h-[560px]"
           >
-            <div className="grid grid-cols-2 grid-rows-2 gap-4 flex-1">
+            <motion.div
+              style={{ rotateX, rotateY, transformStyle: 'preserve-3d' }}
+              className="grid grid-cols-2 grid-rows-2 gap-4 flex-1"
+            >
               {/* Central identity card — spans full height on col 1 */}
-              <div className="row-span-2 glass-hero rounded-[28px] p-7 flex flex-col justify-between overflow-hidden relative">
-                {/* Accent glow inside the card */}
-                <div
-                  className="absolute -top-10 -right-10 w-40 h-40 rounded-full pointer-events-none"
-                  style={{ background: 'radial-gradient(circle, rgba(56,189,248,0.35), transparent 70%)' }}
-                />
-
-                <div className="relative flex items-center justify-between">
-                  <div className="w-14 h-14 rounded-2xl bg-white/20 flex items-center justify-center">
-                    <Sparkles size={24} className="text-white" />
+              <motion.div
+                style={{ y: parallaxMain, transformStyle: 'preserve-3d' }}
+                className="row-span-2 glass-hero rounded-[28px] p-3 flex flex-col overflow-hidden relative"
+              >
+                {/* Dummy preview image with icon/badge overlay */}
+                <div className="relative flex-1 min-h-0 mb-4 rounded-[20px] overflow-hidden border border-white/15">
+                  <img
+                    src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=600&q=60&auto=format&fit=crop"
+                    alt="Preview project"
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-transparent" />
+                  <div className="absolute top-3 left-3 right-3 flex items-center justify-between">
+                    <div className="w-11 h-11 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+                      <Sparkles size={20} className="text-white" />
+                    </div>
+                    <span className="px-2.5 py-1 rounded-full bg-black/30 backdrop-blur-sm border border-white/15 text-[11px] font-semibold text-white/80 tracking-wide">
+                      v2.0
+                    </span>
                   </div>
-                  <span className="px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-[11px] font-semibold text-white/70 tracking-wide">
-                    v2.0
-                  </span>
                 </div>
 
-                <div className="relative">
-                  <p className="font-display font-bold text-white text-2xl mb-1">cobamulai.</p>
-                  <p className="text-white/60 text-sm mb-5">AI & Web Studio</p>
-
-                  {/* Mini metric row */}
-                  <div className="grid grid-cols-2 gap-3 mb-5">
-                    <div className="rounded-xl bg-white/8 border border-white/10 px-3 py-2.5">
-                      <p className="font-display font-bold text-white text-lg leading-none mb-1">50+</p>
-                      <p className="text-white/50 text-[11px]">Proyek live</p>
+                <div className="relative px-4 pb-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <div>
+                      <p className="font-display font-bold text-white text-2xl mb-0.5">cobamulai.</p>
+                      <p className="text-white/60 text-sm">AI & Web Studio</p>
                     </div>
-                    <div className="rounded-xl bg-white/8 border border-white/10 px-3 py-2.5">
-                      <p className="font-display font-bold text-white text-lg leading-none mb-1">4.9</p>
-                      <p className="text-white/50 text-[11px]">Rating klien</p>
+                    <div className="text-right flex-shrink-0">
+                      <p className="font-display font-bold text-white text-lg leading-none mb-1">4.9<span className="text-white/40 text-xs font-normal">/50+</span></p>
+                      <p className="text-white/50 text-[11px]">Rating / Proyek</p>
                     </div>
                   </div>
 
@@ -241,28 +307,40 @@ const Hero = ({ waLink }: { waLink: string }) => {
                     <span className="text-xs text-white/70 font-medium">Tersedia untuk proyek baru</span>
                   </div>
                 </div>
-              </div>
+              </motion.div>
 
               {/* Feature cells */}
               {floatingCards.map((card, i) => (
-                <div key={i} className="glass-hero rounded-[24px] p-5 flex flex-col justify-between">
-                  <div className="flex items-start justify-between">
-                    <div className="w-10 h-10 rounded-xl bg-white/15 flex items-center justify-center flex-shrink-0">
-                      {card.icon}
+                <motion.div
+                  key={i}
+                  style={{ y: i === 0 ? parallaxCard1 : parallaxCard2, transformStyle: 'preserve-3d' }}
+                  className="glass-hero rounded-[24px] p-2 flex flex-col relative overflow-hidden"
+                >
+                  <div className="relative flex-1 min-h-0 rounded-[18px] overflow-hidden border border-white/15">
+                    <img
+                      src={card.img}
+                      alt=""
+                      className="absolute inset-0 w-full h-full object-cover"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-navy/85 via-brand-navy/25 to-transparent" />
+                    <div className="relative flex items-start justify-between p-3">
+                      <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center flex-shrink-0">
+                        {card.icon}
+                      </div>
+                      {card.trend && (
+                        <span className="text-[11px] font-semibold text-emerald-300 bg-emerald-400/15 backdrop-blur-sm px-2 py-0.5 rounded-full">
+                          {card.trend}
+                        </span>
+                      )}
                     </div>
-                    {card.trend && (
-                      <span className="text-[11px] font-semibold text-emerald-300 bg-emerald-400/10 px-2 py-0.5 rounded-full">
-                        {card.trend}
-                      </span>
-                    )}
                   </div>
-                  <div>
+                  <div className="pt-3 px-2 pb-1">
                     <p className="font-semibold text-white text-sm leading-tight">{card.label}</p>
                     <p className="text-white/55 text-xs">{card.sub}</p>
                   </div>
-                </div>
+                </motion.div>
               ))}
-            </div>
+            </motion.div>
 
           </motion.div>
         </div>

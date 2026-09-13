@@ -2,7 +2,6 @@ import { motion } from 'framer-motion';
 import {
   Trophy,
   Users,
-  Zap,
   Target,
   Bot,
   Globe,
@@ -14,9 +13,8 @@ import {
 } from 'lucide-react';
 
 const stats = [
-  { label: 'Proyek Selesai', value: '50+', icon: <Trophy size={18} />, color: 'text-amber-500', bg: 'bg-amber-50' },
+  { label: 'Proyek Selesai', value: '7', icon: <Trophy size={18} />, color: 'text-amber-500', bg: 'bg-amber-50' },
   { label: 'Client Satisfaction', value: '100%', icon: <Users size={18} />, color: 'text-brand-blue', bg: 'bg-blue-50' },
-  { label: 'AI Models Used', value: '24', icon: <Zap size={18} />, color: 'text-purple-500', bg: 'bg-purple-50' },
   { label: 'Years Experience', value: '4+', icon: <Target size={18} />, color: 'text-emerald-500', bg: 'bg-emerald-50' },
 ];
 

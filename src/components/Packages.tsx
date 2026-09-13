@@ -1,108 +1,110 @@
 import { motion } from 'framer-motion';
-import { CheckCircle2, X, Zap, Rocket, Building2, ArrowRight, Star, MessageCircle } from 'lucide-react';
+import { CheckCircle2, Globe, Smartphone, Code2, ArrowRight, Star, MessageCircle } from 'lucide-react';
 
 interface PackageData {
   id: string;
-  badge: string | null;
   icon: React.ReactNode;
   name: string;
   tagline: string;
   price: string;
   priceNote: string;
+  itemsTitle: string;
+  items: string[];
+  benefitsTitle: string;
+  benefits: string[];
   iconGradient: string;
   accent: string;
   accentLight: string;
   accentBorder: string;
-  featured: boolean;
-  features: string[];
-  notIncluded: string[];
   cta: string;
-  deliveryTime: string;
 }
 
 const packages: PackageData[] = [
   {
-    id: 'umkm',
-    badge: null,
-    icon: <Zap size={22} />,
-    name: 'UMKM Go Digital',
-    tagline: 'Langkah pertama yang tepat',
-    price: '1.999.000',
-    priceNote: 'one-time payment',
-    iconGradient: 'from-emerald-400 to-teal-500',
-    accent: '#059669',
-    accentLight: '#D1FAE5',
-    accentBorder: '#A7F3D0',
-    featured: false,
-    deliveryTime: '5–7 hari kerja',
-    features: [
-      'Landing page 1 halaman',
-      'Mobile responsive',
-      'WhatsApp & Google Maps integration',
-      'Basic SEO (title, meta, sitemap)',
-      'Domain .com 1 tahun',
-      'Hosting 1 tahun',
-      '1× revisi desain',
-    ],
-    notIncluded: ['CMS / Admin Panel', 'AI Chatbot', 'Analytics Dashboard'],
-    cta: 'Mulai Go Digital',
-  },
-  {
-    id: 'bisnis',
-    badge: 'Paling Populer',
-    icon: <Building2 size={22} />,
-    name: 'Bisnis',
-    tagline: 'Untuk bisnis yang serius tumbuh',
-    price: '4.999.000',
-    priceNote: 'one-time payment',
+    id: 'website',
+    icon: <Globe size={22} />,
+    name: 'Paket Website untuk Bisnis',
+    tagline: 'Solusi website sesuai kebutuhan bisnis Anda',
+    price: '3.500.000',
+    priceNote: '*Harga bisa berubah, menyesuaikan fitur yang diminta',
     iconGradient: 'from-brand-blue to-indigo-500',
     accent: '#2563EB',
     accentLight: '#DBEAFE',
     accentBorder: '#93C5FD',
-    featured: true,
-    deliveryTime: '10–14 hari kerja',
-    features: [
-      'Multi-page website (hingga 7 halaman)',
-      'Mobile responsive + animasi premium',
-      'CMS / Admin panel sederhana',
-      'AI Chatbot terintegrasi',
-      'Advanced SEO + Google Analytics',
-      'Formulir kontak & lead capture',
-      'Domain .com + Hosting 1 tahun',
-      '3× revisi desain',
-      'Support 1 bulan via WhatsApp',
+    itemsTitle: 'Jenis Website',
+    items: [
+      'Website Company',
+      'Website Operasional Kerja',
+      'Website Katalog',
+      'Website Pribadi',
+      'Website Berbasis AI',
+      'Custom Website',
     ],
-    notIncluded: ['E-commerce / payment gateway', 'Custom API integration'],
-    cta: 'Pilih Paket Bisnis',
+    benefitsTitle: 'Benefit Paket Website',
+    benefits: [
+      'Website yang sesuai dengan permintaan fitur dari awal hingga akhir.',
+      'Hak Akses ke Dokumen Project dengan master email bersama.',
+      'Biaya perpanjangan Server dan Domain cukup 1 tahun sekali, supaya lebih fokus dalam bisnis pengguna.',
+      'Keamanan data karena data disimpan di Server dengan penjagaan yang ketat supaya tidak mudah di retas.',
+      'Garansi 3 minggu setelah publikasi untuk perbaikan jika masih ada Bug/Error dalam Website.',
+    ],
+    cta: 'Pilih Paket Website',
   },
   {
-    id: 'lanjutan',
-    badge: null,
-    icon: <Rocket size={22} />,
-    name: 'Bisnis Lanjutan',
-    tagline: 'Senjata digital kelas enterprise',
-    price: '9.999.000',
-    priceNote: 'one-time payment',
+    id: 'apps',
+    icon: <Smartphone size={22} />,
+    name: 'Paket Apps untuk Bisnis',
+    tagline: 'Aplikasi custom untuk kebutuhan bisnis Anda',
+    price: '6.000.000',
+    priceNote: '*Harga bisa berubah, menyesuaikan fitur yang diminta',
     iconGradient: 'from-purple-500 to-pink-500',
     accent: '#7C3AED',
     accentLight: '#EDE9FE',
     accentBorder: '#C4B5FD',
-    featured: false,
-    deliveryTime: '21–30 hari kerja',
-    features: [
-      'Custom web app (unlimited halaman)',
-      'Desain UI/UX kustom penuh',
-      'AI Chatbot dengan custom training',
-      'Dashboard analytics real-time',
-      'E-commerce + payment gateway',
-      'Custom API & third-party integration',
-      'SEO enterprise + sitemap auto-update',
-      'Domain .com + Hosting 1 tahun',
-      'Unlimited revisi selama development',
-      'Support 3 bulan prioritas',
+    itemsTitle: 'Jenis Apps',
+    items: [
+      'App E-Commerce',
+      'App Platform Belajar',
+      'App Operasional Bisnis',
+      'App Komunikasi',
+      'App Berbasis AI',
+      'Custom App',
     ],
-    notIncluded: [],
-    cta: 'Wujudkan Visi Anda',
+    benefitsTitle: 'Benefit Paket Apps',
+    benefits: [
+      'App yang sesuai dengan permintaan fitur dari awal hingga akhir.',
+      'Hak Akses ke Dokumen Project dengan master email bersama.',
+      'Biaya perpanjangan Server dan Domain cukup 1 tahun sekali, supaya lebih fokus dalam bisnis pengguna.',
+      'Keamanan data karena data disimpan di Server dengan penjagaan yang ketat supaya tidak mudah di retas.',
+      'Garansi 3 minggu setelah publikasi untuk perbaikan jika masih ada Bug/Error dalam aplikasi.',
+    ],
+    cta: 'Pilih Paket Apps',
+  },
+  {
+    id: 'developer-support',
+    icon: <Code2 size={22} />,
+    name: 'Developer Support',
+    tagline: 'Bantuan teknis untuk masalah code Anda',
+    price: '2.500.000',
+    priceNote: '*Harga bisa berubah, menyesuaikan fitur yang diminta',
+    iconGradient: 'from-orange-400 to-red-500',
+    accent: '#EA580C',
+    accentLight: '#FFEDD5',
+    accentBorder: '#FED7AA',
+    itemsTitle: 'Cakupan Support',
+    items: [
+      'Perbaikan Bug/Error pada Code',
+      'Support semua Framework',
+      'Support semua Bahasa Pemrograman',
+      'Optimasi & Review Code',
+    ],
+    benefitsTitle: 'Benefit Developer Support',
+    benefits: [
+      'Task diselesaikan sesuai dengan yang diminta.',
+      'Bisa revisi jika masih ada yang kurang.',
+      'Keamanan akses ke Database dan Server terjaga.',
+    ],
+    cta: 'Pilih Developer Support',
   },
 ];
 
@@ -119,7 +121,7 @@ const Packages = ({ waLink }: { waLink?: string }) => {
       {/* Ambient glow top */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[1px] bg-gradient-to-r from-transparent via-blue-300/60 to-transparent" />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         {/* ── Header ── */}
         <motion.div
           initial={{ opacity: 0, y: 24 }}
@@ -138,13 +140,12 @@ const Packages = ({ waLink }: { waLink?: string }) => {
             <span className="text-gradient">Sepadan Hasilnya</span>
           </h2>
           <p className="text-brand-slate text-lg max-w-2xl mx-auto leading-relaxed">
-            Tidak ada biaya tersembunyi. Pilih paket sesuai skala bisnis Anda —
-            semua sudah termasuk domain &amp; hosting.
+            Pilih paket sesuai kebutuhan bisnis Anda — Website atau Apps.
           </p>
         </motion.div>
 
         {/* ── Cards ── */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:grid-rows-[repeat(7,auto)] lg:items-stretch">
           {packages.map((pkg, index) => (
             <motion.div
               key={pkg.id}
@@ -152,39 +153,14 @@ const Packages = ({ waLink }: { waLink?: string }) => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.2 }}
               transition={{ delay: index * 0.08, duration: 0.45 }}
-              className={`reveal relative rounded-3xl transition-shadow duration-300 group ${
-                pkg.featured
-                  ? 'lg:-mt-4 lg:mb-4'
-                  : ''
-              }`}
-              style={
-                pkg.featured
-                  ? {
-                      background: '#fff',
-                      border: `2px solid ${pkg.accentBorder}`,
-                      boxShadow: `0 8px 40px rgba(37,99,235,0.14), 0 1px 4px rgba(0,0,0,0.06)`,
-                    }
-                  : {
-                      background: '#fff',
-                      border: '1px solid #E2E8F0',
-                      boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06)',
-                    }
-              }
+              className="reveal relative rounded-3xl transition-shadow duration-300 group lg:grid lg:[grid-template-rows:subgrid] lg:row-span-7"
+              style={{
+                background: '#fff',
+                border: '1px solid #E2E8F0',
+                boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.06)',
+              }}
             >
-              {/* Popular badge */}
-              {pkg.badge && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
-                  <div
-                    className="flex items-center gap-1.5 px-4 py-1.5 rounded-full text-white text-xs font-bold tracking-wide shadow-blue-sm"
-                    style={{ background: `linear-gradient(135deg, ${pkg.accent}, #0EA5E9)` }}
-                  >
-                    <Star size={11} className="fill-white" />
-                    {pkg.badge}
-                  </div>
-                </div>
-              )}
-
-              <div className="p-7">
+              <div className="p-7 pb-0 pt-7 lg:grid lg:[grid-template-rows:subgrid] lg:row-span-7">
                 {/* Icon + Name */}
                 <div className="mb-7">
                   <div
@@ -200,46 +176,54 @@ const Packages = ({ waLink }: { waLink?: string }) => {
 
                 {/* Price */}
                 <div
-                  className="mb-7 pb-7"
+                  className="mb-7 pb-7 self-start"
                   style={{ borderBottom: `1px solid ${pkg.accentBorder}55` }}
                 >
                   <div className="flex items-baseline gap-1">
-                    <span className="text-brand-muted text-sm font-medium">Rp</span>
+                    <span className="text-brand-muted text-sm font-medium">
+                      Harga Mulai dari Rp
+                    </span>
                     <span className="font-display font-extrabold text-4xl text-brand-dark tracking-tight">
                       {pkg.price}
                     </span>
                   </div>
-                  <div className="flex items-center justify-between mt-2">
-                    <p className="text-xs text-brand-muted uppercase tracking-wider">
-                      {pkg.priceNote}
-                    </p>
-                    <span
-                      className="text-xs font-semibold px-2.5 py-1 rounded-full"
-                      style={{ background: pkg.accentLight, color: pkg.accent }}
-                    >
-                      ⏱ {pkg.deliveryTime}
-                    </span>
-                  </div>
+                  <p className="text-xs text-brand-muted mt-2 italic">{pkg.priceNote}</p>
                 </div>
 
-                {/* Features */}
-                <div className="mb-7 space-y-2.5">
-                  {pkg.features.map((feature, i) => (
+                {/* Items title */}
+                <p className="text-xs font-bold uppercase tracking-wider text-brand-muted mb-3 self-start">
+                  {pkg.itemsTitle}
+                </p>
+
+                {/* Items list */}
+                <div className="space-y-2.5 self-start mb-7">
+                  {pkg.items.map((item, i) => (
                     <div key={i} className="flex items-start gap-2.5">
                       <CheckCircle2
                         size={15}
                         className="mt-0.5 flex-shrink-0"
                         style={{ color: pkg.accent }}
                       />
-                      <span className="text-sm text-brand-slate leading-snug">{feature}</span>
+                      <span className="text-sm text-brand-slate leading-snug">{item}</span>
                     </div>
                   ))}
-                  {pkg.notIncluded.map((feature, i) => (
-                    <div key={i} className="flex items-start gap-2.5 opacity-40">
-                      <X size={15} className="mt-0.5 flex-shrink-0 text-brand-muted" />
-                      <span className="text-sm text-brand-muted leading-snug line-through">
-                        {feature}
-                      </span>
+                </div>
+
+                {/* Benefits title */}
+                <p className="text-xs font-bold uppercase tracking-wider text-brand-muted mb-3 self-start">
+                  {pkg.benefitsTitle}
+                </p>
+
+                {/* Benefits list */}
+                <div className="space-y-2.5 self-start mb-7">
+                  {pkg.benefits.map((benefit, i) => (
+                    <div key={i} className="flex items-start gap-2.5">
+                      <CheckCircle2
+                        size={15}
+                        className="mt-0.5 flex-shrink-0"
+                        style={{ color: pkg.accent }}
+                      />
+                      <span className="text-sm text-brand-slate leading-snug">{benefit}</span>
                     </div>
                   ))}
                 </div>
@@ -249,23 +233,12 @@ const Packages = ({ waLink }: { waLink?: string }) => {
                   href={ctaLink}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className={`group/btn w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl font-semibold text-sm transition-[transform,opacity] duration-300 ${
-                    pkg.featured
-                      ? 'text-white hover:opacity-90 hover:scale-[1.02]'
-                      : 'text-brand-dark hover:scale-[1.01]'
-                  }`}
-                  style={
-                    pkg.featured
-                      ? {
-                          background: `linear-gradient(135deg, ${pkg.accent}, #0EA5E9)`,
-                          boxShadow: `0 4px 20px ${pkg.accent}35`,
-                        }
-                      : {
-                          background: pkg.accentLight,
-                          border: `1px solid ${pkg.accentBorder}`,
-                          color: pkg.accent,
-                        }
-                  }
+                  className="group/btn w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-2xl font-semibold text-sm transition-[transform,opacity] duration-300 hover:scale-[1.01] self-end mb-7"
+                  style={{
+                    background: pkg.accentLight,
+                    border: `1px solid ${pkg.accentBorder}`,
+                    color: pkg.accent,
+                  }}
                 >
                   {pkg.cta}
                   <ArrowRight
@@ -291,7 +264,7 @@ const Packages = ({ waLink }: { waLink?: string }) => {
               Butuh custom requirement?
             </p>
             <p className="text-brand-muted text-sm">
-              Semua harga sudah termasuk domain .com &amp; hosting 1 tahun.
+              Diskusikan kebutuhan Website atau Apps Anda bersama kami.
             </p>
           </div>
           <a

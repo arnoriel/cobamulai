@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ExternalLink, Sparkles, Globe } from 'lucide-react';
+import { ExternalLink, Globe } from 'lucide-react';
 
 interface Project {
   title: string;
@@ -288,7 +288,6 @@ const Portfolio = () => {
         >
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-brand-soft border border-blue-100 text-brand-blue text-sm font-semibold mb-5">
-              <Sparkles size={14} />
               Karya Nyata
             </div>
             <h2 className="font-display text-4xl md:text-5xl font-extrabold text-brand-dark mb-4 tracking-tight">

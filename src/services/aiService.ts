@@ -29,7 +29,7 @@ export const getAIResponse = async (userMessage: string) => {
     const response = await axios.post(
       'https://openrouter.ai/api/v1/chat/completions',
       {
-        model: 'nvidia/nemotron-3-nano-omni-30b-a3b-reasoning:free',
+        model: 'nvidia/nemotron-3-ultra-550b-a55b:free',
         messages: [
           { 
             role: 'system', 
